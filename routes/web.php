@@ -15,6 +15,4 @@ Route::prefix('database')->group(function () {
     Route::get('update', 'DatabaseUpdate@update')->name('databaseUpdate');
 });
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'DisplayItems@all');
