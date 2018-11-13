@@ -1,5 +1,10 @@
-<section class="oneItem" style="width:150px;margin:10px;">
+<section class="oneItem" style="width:420px;margin:10px;">
     <img src="{{$icon}}"/>
-
-    <p>{{$description}}</p>
+    <ul>
+        @foreach($item_attributes as $one_attribute)
+            <li style="color:blue;" data-item-attribute="true">
+                {{$one_attribute}}
+            </li>
+        @endforeach
+    </ul>
 </section>
