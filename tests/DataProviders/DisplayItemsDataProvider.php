@@ -9,37 +9,36 @@
 namespace Tests\DataProviders;
 
 
+use App\Http\Controllers\Helper;
+use Tests\APISampleData\Consumables;
+
 class DisplayItemsDataProvider {
 
     public static function ItemsDescriptionToArray() {
+        $returned_data_set = array();
 
-        $object = new \stdClass();
-        $object->details = new \stdClass();
-        $object->details->description = "-line number one \n, -line number two \n, -line number three";
+        Consumables::setStringAcquiredFromApi_multipleItems();
+        $array_of_objects = json_decode(Consumables::getStringAcquiredFromApi());
+        foreach ($array_of_objects as $one_object) {
+            $returned_data_set[] = $one_object;
+        }
 
-        $object_2 = new \stdClass();
-        $object_2->details = new \stdClass();
-        $object_2->details->description = 'line 1';
-
-        return [
-            [$object],
-            [$object_2]
-        ];
+        return array($returned_data_set);
 
     }
 
     public static function ItemsDataToArray() {
-//TODO - set proper returned data + provided proper construction for transforming function
-        return [
-            array( //Test set 1
-                array(
-                    0 => ['item_data' => self::ItemsDescriptionToArray()[0][0]] #one_item
-                ),
-                array(
-                    1 => ['item_data' => self::ItemsDescriptionToArray()[0][1]] # one_item
-                )
-            ),
-        ];
+        $returned_data_set = array();
+
+        Consumables::setStringAcquiredFromApi_multipleItems();
+        $array_of_objects = json_decode(Consumables::getStringAcquiredFromApi());
+
+        //TODO : DEBUG
+        foreach ($array_of_objects as $id => $one_object) {
+            $returned_data_set[] = array($id => array('item_data' => json_encode($one_object)));
+        }
+
+        return array($returned_data_set);
 
     }
 

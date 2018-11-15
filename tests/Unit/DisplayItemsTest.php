@@ -30,6 +30,7 @@ class DisplayItemsTest extends TestCase {
 
     public function testItemsDescriptionToArray($object) {
 
+
         $method = $this->display_items_reflection->getMethod('transformItemsDescriptionToAttributesArray');
         $method->setAccessible(true);
         $result = $method->invokeArgs($this->display_items, array($object));
@@ -52,9 +53,9 @@ class DisplayItemsTest extends TestCase {
         $method->setAccessible(true);
         $result = $method->invokeArgs($this->display_items, array($items));
 
-
+        //TODO - DEBUG
         $this->assertInternalType('array', $result);
-        $this->assertContains('item_data', $result);
+        $this->assertContains('item_data', $result[0]);
 
     }
 
