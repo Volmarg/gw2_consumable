@@ -5,10 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Consumables;
 
-// Remove all includes/namespaces below as well
-use Tests\DataProviders\DisplayItemsDataProvider;
-use Tests\APISampleData\Consumables as APIDummyData;
-
 class DisplayItems extends Controller {
     public function all() {
         $consumables = new Consumables();
@@ -17,13 +13,9 @@ class DisplayItems extends Controller {
     }
 
     protected function itemsDataToArray($all_items) {
-
-
         foreach ($all_items as $id => $one_item) {
-            Helper::stdDump($id);
             $all_items[$id]['item_data'] = $this->transformItemsDescriptionToAttributesArray(json_decode($one_item['item_data']));
         }
-
         return $all_items;
     }
 

@@ -53,9 +53,8 @@ class DisplayItemsTest extends TestCase {
         $method->setAccessible(true);
         $result = $method->invokeArgs($this->display_items, array($items));
 
-        //TODO - DEBUG
         $this->assertInternalType('array', $result);
-        $this->assertContains('item_data', $result[0]);
+        $this->assertArrayHasKey('item_data', $result[0]);
 
     }
 

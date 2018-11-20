@@ -12,7 +12,7 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
-        Blade::component('components.item', 'singleItem');
+        Blade::component('Components.item', 'singleItem');
     }
 
     /**
