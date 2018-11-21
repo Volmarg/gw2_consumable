@@ -11,11 +11,12 @@
 <body>
 <div class="flex-center position-ref full-height">
 
+    <example-component></example-component>
+    <food-attribute-selects ></food-attribute-selects>
+
+    @yield('filters')
     @yield('body-center')
-
-
 </div>
 
-<script src="/reload/reload.js"></script>
 </body>
 </html>

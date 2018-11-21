@@ -2,7 +2,7 @@
     <img src="{{$icon}}"/>
     <ul>
         @foreach($item_attributes as $one_attribute)
-            <li style="color:blue;" data-item-attribute="true">
+            <li style="color:blue;" data-consumable-item-attribute="true" >
                 {{$one_attribute}}
             </li>
         @endforeach

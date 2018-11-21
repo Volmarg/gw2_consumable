@@ -46,6 +46,7 @@ class DisplayItemsTest extends TestCase {
     /**
      * @covers       \App\Http\Controllers\DisplayItems::itemsDataToArray();
      * @dataProvider \Tests\DataProviders\DisplayItemsDataProvider::ItemsDataToArray()
+     * @depends testItemsDescriptionToArray
      */
 
     public function testItemsDataToArray($items) {
