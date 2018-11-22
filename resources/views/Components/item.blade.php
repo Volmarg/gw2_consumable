@@ -1,4 +1,4 @@
-<section class="oneItem" style="width:420px;margin:10px;" >
+<section class="oneItem" style="width:420px;margin:10px;" ref="oneFoodItem">
     <img src="{{$icon}}"/>
     <ul >
         @foreach($item_attributes as $one_attribute)
