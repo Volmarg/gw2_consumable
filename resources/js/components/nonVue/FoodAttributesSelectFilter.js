@@ -1,3 +1,5 @@
+//TODO: rebuild this into json and call main function once
+
 //build select lists
 var fall_foo_items_wrapper = new Vue({
     el: '#all-food-items-wrapper',
