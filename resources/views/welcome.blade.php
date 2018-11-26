@@ -22,7 +22,7 @@
 </div>
 
 <!-- <script src="{{ asset('js/app.js') }}"></script>  this is required for vue (components) to work in laravel !-->
-<script src="{{ asset('js/nonVueComponents.js') }}"></script> <!-- this is required for vue (components) to work in laravel !-->
+<script src="{{ asset('js/bundle.js') }}"></script> <!-- this is required for vue (components) to work in laravel !-->
 
 </body>
 </html>

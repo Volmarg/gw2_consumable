@@ -1,91 +1,107 @@
-//TODO: rebuild this into json and call main function once
+FoodAttributesSelectFilter = {
 
-//build select lists
-var fall_foo_items_wrapper = new Vue({
-    el: '#all-food-items-wrapper',
-    data: {
-        vue_loop_repeats: 1
+    vueFoodAttributes: {
+        allFoodItemsWrapper: new Vue({
+            el: '#all-food-items-wrapper',
+            data: {
+                vue_loop_repeats: 1
+            },
+            methods: {
+                hasAttribute: function (element) {
+                    let status = true;
+                    if (element.innerHTML.trim() === 'tests') {
+                        status = false;
+                    }
+                    return status;
+                }
+            }
+        }),
+
+        foodAttributesIntoArray: function () {
+            let array_of_attributes = [''];
+            let all_dom_list_elements = this.allFoodItemsWrapper.$refs.oneAttributeOfFood;
+
+            all_dom_list_elements.forEach(function (item) {
+                array_of_attributes.push(item.innerHTML.trim());
+            });
+            return array_of_attributes.filter(this.onlyUniqueArrayValues);
+        },
+
+        onlyUniqueArrayValues: function (value, index, self) {
+            return self.indexOf(value) === index;
+        },
+
+        fillSelectOptionsWithAttributes: function () {
+            let all_filter_selects = document.querySelectorAll('#food-attribute-filters');
+            let that = this;
+
+            all_filter_selects.forEach(function (item) {
+                new Vue({
+                    el: item,
+                    data: {
+                        foodAttributes: that.foodAttributesIntoArray(),
+                    },
+                });
+            });
+        },
+
+        getRefs() {
+            return this.allFoodItemsWrapper;
+        }
     },
-    methods: {
-        hasAttribute: function (element) {
+
+    select_2: {
+
+        init: function () {
+            let selects = $('[id^="food-attribute-select"]');
+            selects.select2();
+            let refs = FoodAttributesSelectFilter.vueFoodAttributes.getRefs();
+            let that = this;
+
+            selects.on("change", function (event) {
+                let selected_option = $(event.target).find('option:selected');
+                that.filterFoodItems(refs.$refs.oneFoodItem, selected_option);
+            });
+
+        },
+
+        filterFoodItems: function filterFoodItems(food_items, selected_option_dom) {
+            let that = this;
+
+            food_items.forEach(function (food_element) {
+                let jq_food_elem = $(food_element);
+                let list_elements = jq_food_elem.find('li');
+
+                list_elements.each(function () {
+                    let item_has_option = that.ifItemDescriptionContainsSelectedOption(selected_option_dom, jq_food_elem);
+                    that.changeItemVisibility(jq_food_elem, item_has_option);
+                });
+            });
+        },
+
+        ifItemDescriptionContainsSelectedOption: function (selected_option_dom, jq_food_elem) {
+            let selected_option_string = selected_option_dom.text().trim();
+            let escaped_selected_option_string = selected_option_string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            let reg = new RegExp(escaped_selected_option_string, "i");
             let status = true;
-            if (element.innerHTML.trim() === 'tests') {
+
+            debugger;
+            if (!reg.exec($(jq_food_elem).text().trim())) {
                 status = false;
             }
+
             return status;
-        }
-    }
-});
-
-function foodAttributesIntoArray() {
-    var array_of_atrributes = [''];
-    var all_dom_list_elements = fall_foo_items_wrapper.$refs.oneAttributeOfFood;
-
-    all_dom_list_elements.forEach(function (item, index) {
-        array_of_atrributes.push(item.innerHTML.trim());
-    });
-    return array_of_atrributes.filter(onlyUnique);
-}
-
-function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-}
-
-var all_filter_selectcs = document.querySelectorAll('#food-attribute-filters');
-
-all_filter_selectcs.forEach(function (item, index) {
-    new Vue({
-        el: item,
-        data: {
-            foodAttributes: foodAttributesIntoArray(),
         },
-    });
-});
 
+        changeItemVisibility: function (jq_food_elem, item_has_option) {
 
-//add Select 2 and manipulate it
-$(document).ready(function () {
-    var selects = $('[id^="food-attribute-select"]');
-    selects.select2();
-
-    selects.on("change", function (event) {
-        let selected_option = $(event.target).find('option:selected');
-        filterFoodItems(fall_foo_items_wrapper.$refs.oneFoodItem, selected_option);
-    });
-
-    function filterFoodItems(food_items, selected_option_dom) {
-        food_items.forEach(function (food_element, index) {
-            let jq_food_elem = $(food_element);
-            let list_elements = jq_food_elem.find('li');
-
-            list_elements.each(function () {
-                let item_has_option = ifItemDescriptionContainsSelectedOption(selected_option_dom, jq_food_elem);
-                changeItemVisibility(jq_food_elem, item_has_option);
-            });
-        });
-    }
-
-    function ifItemDescriptionContainsSelectedOption(selected_option_dom) {
-        let selected_option_string = selected_option_dom.text().trim();
-        let reg = new RegExp(selected_option_string, "i");
-        let status = true;
-
-        if (!reg.exec($(this).text().trim())) {
-            status = false;
+            if (!item_has_option) {
+                jq_food_elem.css({display: 'none'});
+            } else {
+                jq_food_elem.css({display: 'block'});
+            }
         }
 
-        return status;
-    }
-
-    function changeItemVisibility(jq_food_elem, item_has_option) {
-        if (!item_has_option) {
-            jq_food_elem.css({display: 'none'});
-        } else {
-            jq_food_elem.css({display: 'block'});
-        }
-    }
-});
-
-
-
-
+    },
+};

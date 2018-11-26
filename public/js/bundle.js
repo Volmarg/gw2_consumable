@@ -1,10 +1,6 @@
-class FoodAttributesSelecttFilter {
+FoodAttributesSelectFilter = {
 
-    constructor() {
-
-    }
-
-    vueFoodAttributes = {
+    vueFoodAttributes: {
         allFoodItemsWrapper: new Vue({
             el: '#all-food-items-wrapper',
             data: {
@@ -37,51 +33,61 @@ class FoodAttributesSelecttFilter {
 
         fillSelectOptionsWithAttributes: function () {
             let all_filter_selects = document.querySelectorAll('#food-attribute-filters');
+            let that = this;
 
             all_filter_selects.forEach(function (item) {
                 new Vue({
                     el: item,
                     data: {
-                        foodAttributes: foodAttributesIntoArray(),
+                        foodAttributes: that.foodAttributesIntoArray(),
                     },
                 });
             });
+        },
+
+        getRefs() {
+            return this.allFoodItemsWrapper;
         }
+    },
 
-
-    };
-
-    select2 = {
+    select_2: {
 
         init: function () {
             let selects = $('[id^="food-attribute-select"]');
             selects.select2();
+            let refs = FoodAttributesSelectFilter.vueFoodAttributes.getRefs();
+            let that = this;
 
             selects.on("change", function (event) {
                 let selected_option = $(event.target).find('option:selected');
-                this.filterFoodItems(this.allFoodItemsWrapper.$refs.oneFoodItem, selected_option);
+                that.filterFoodItems(refs.$refs.oneFoodItem, selected_option);
             });
 
         },
 
         filterFoodItems: function filterFoodItems(food_items, selected_option_dom) {
+            let that = this;
+
             food_items.forEach(function (food_element) {
                 let jq_food_elem = $(food_element);
                 let list_elements = jq_food_elem.find('li');
 
                 list_elements.each(function () {
-                    let item_has_option = this.ifItemDescriptionContainsSelectedOption(selected_option_dom, jq_food_elem);
-                    this.changeItemVisibility(jq_food_elem, item_has_option);
+                    let item_has_option = that.ifItemDescriptionContainsSelectedOption(selected_option_dom, jq_food_elem);
+                    that.changeItemVisibility(jq_food_elem, item_has_option);
                 });
             });
         },
 
-        ifItemDescriptionContainsSelectedOption: function (selected_option_dom) {
+        ifItemDescriptionContainsSelectedOption: function (selected_option_dom, jq_food_elem) {
             let selected_option_string = selected_option_dom.text().trim();
-            let reg = new RegExp(selected_option_string, "i");
+            let escaped_selected_option_string = selected_option_string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            let reg = new RegExp(escaped_selected_option_string, "i");
             let status = true;
 
-            if (!reg.exec($(this).text().trim())) {
+            debugger;
+            if (!reg.exec($(jq_food_elem).text().trim())) {
                 status = false;
             }
 
@@ -89,6 +95,7 @@ class FoodAttributesSelecttFilter {
         },
 
         changeItemVisibility: function (jq_food_elem, item_has_option) {
+
             if (!item_has_option) {
                 jq_food_elem.css({display: 'none'});
             } else {
@@ -96,9 +103,15 @@ class FoodAttributesSelecttFilter {
             }
         }
 
-    };
-}
+    },
+};
+
+Init = {
+    foodAttributesSelect: function () {
+        FoodAttributesSelectFilter.vueFoodAttributes.fillSelectOptionsWithAttributes();
+        FoodAttributesSelectFilter.select_2.init();
+    },
+};
 
 
-
-
+Init.foodAttributesSelect();
