@@ -59,13 +59,14 @@ FoodAttributesSelectFilter = {
             let that = this;
 
             selects.on("change", function (event) {
-                let selected_option = $(event.target).find('option:selected');
-                that.filterFoodItems(refs.$refs.oneFoodItem, selected_option);
+                let all_selects = $('.select2-hidden-accessible');
+                let all_selected_options = all_selects.find('option:selected');
+                that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options);
             });
 
         },
 
-        filterFoodItems: function filterFoodItems(food_items, selected_option_dom) {
+        filterFoodItems: function filterFoodItems(food_items, selected_options_dom) {
             let that = this;
 
             food_items.forEach(function (food_element) {
@@ -73,23 +74,29 @@ FoodAttributesSelectFilter = {
                 let list_elements = jq_food_elem.find('li');
 
                 list_elements.each(function () {
-                    let item_has_option = that.ifItemDescriptionContainsSelectedOption(selected_option_dom, jq_food_elem);
+                    let item_has_option = that.ifItemDescriptionContainsSelectedOption(selected_options_dom, jq_food_elem);
                     that.changeItemVisibility(jq_food_elem, item_has_option);
                 });
             });
         },
 
-        ifItemDescriptionContainsSelectedOption: function (selected_option_dom, jq_food_elem) {
-            let selected_option_string = selected_option_dom.text().trim();
-            let escaped_selected_option_string = selected_option_string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-            let reg = new RegExp(escaped_selected_option_string, "i");
+        ifItemDescriptionContainsSelectedOption: function (selected_options_dom, jq_food_elem) {
             let status = true;
 
+            //TODO: Finish this each as now all selects are passed in
+            selected_options_dom.each(function (selected_option_dom) {
+                debugger;
+                let selected_option_string = selected_option_dom.text().trim();
+                let escaped_selected_option_string = selected_option_string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                let reg = new RegExp(escaped_selected_option_string, "i");
+
+                if (!reg.exec($(jq_food_elem).text().trim())) {
+                    status = false;
+                }
+            });
+
             debugger;
-            if (!reg.exec($(jq_food_elem).text().trim())) {
-                status = false;
-            }
+            // OLD
 
             return status;
         },
