@@ -5,30 +5,27 @@ FoodAttributesSelectFilter = {
             el: '#all-food-items-wrapper',
             data: {
                 vue_loop_repeats: 1
-            },
-            methods: {
-                hasAttribute: function (element) {
-                    let status = true;
-                    if (element.innerHTML.trim() === 'tests') {
-                        status = false;
-                    }
-                    return status;
-                }
             }
         }),
 
         foodAttributesIntoArray: function () {
             let array_of_attributes = [''];
             let all_dom_list_elements = this.allFoodItemsWrapper.$refs.oneAttributeOfFood;
+            let that = this;
 
             all_dom_list_elements.forEach(function (item) {
-                array_of_attributes.push(item.innerHTML.trim());
+                let item_attribute = that.removeValuesFromItemAttributes(item.innerHTML);
+                array_of_attributes.push(item_attribute.trim());
             });
             return array_of_attributes.filter(this.onlyUniqueArrayValues);
         },
 
         onlyUniqueArrayValues: function (value, index, self) {
             return self.indexOf(value) === index;
+        },
+
+        removeValuesFromItemAttributes: function (item_attribute) {
+            return item_attribute.replace(/([+-])?([0-9])*([%])?/g,'');
         },
 
         fillSelectOptionsWithAttributes: function () {
@@ -83,10 +80,8 @@ FoodAttributesSelectFilter = {
         ifItemDescriptionContainsSelectedOption: function (selected_options_dom, jq_food_elem) {
             let status = true;
 
-            //TODO: Finish this each as now all selects are passed in
-            selected_options_dom.each(function (selected_option_dom) {
-                debugger;
-                let selected_option_string = selected_option_dom.text().trim();
+            selected_options_dom.each(function (index, selected_option_dom) {
+                let selected_option_string = $(selected_option_dom).text().trim();
                 let escaped_selected_option_string = selected_option_string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 let reg = new RegExp(escaped_selected_option_string, "i");
 
@@ -95,8 +90,6 @@ FoodAttributesSelectFilter = {
                 }
             });
 
-            debugger;
-            // OLD
 
             return status;
         },

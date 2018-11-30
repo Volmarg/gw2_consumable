@@ -10,7 +10,7 @@ namespace Tests\Unit;
 
 use App\Http\Controllers\helper;
 use Tests\TestCase;
-use App\Http\Controllers\DisplayItems;
+use App\Http\Controllers\ItemsDisplayer;
 use Tests\DataProviders\DisplayItemsDataProvider as Provider; //TODO: check how to use this in dataProvider
 
 class DisplayItemsTest extends TestCase {
@@ -19,12 +19,12 @@ class DisplayItemsTest extends TestCase {
     public $display_items_reflection;
 
     public function setUp() {
-        $this->display_items = new DisplayItems();
+        $this->display_items = new ItemsDisplayer();
         $this->display_items_reflection = new \ReflectionClass(get_class($this->display_items));
     }
 
     /**
-     * @covers       \App\Http\Controllers\DisplayItems::transformItemsDescriptionToAttributesArray();
+     * @covers       \App\Http\Controllers\ItemsDisplayer::transformItemsDescriptionToAttributesArray();
      * @dataProvider \Tests\DataProviders\DisplayItemsDataProvider::ItemsDescriptionToArray()
      */
 
@@ -44,7 +44,7 @@ class DisplayItemsTest extends TestCase {
     }
 
     /**
-     * @covers       \App\Http\Controllers\DisplayItems::itemsDataToArray();
+     * @covers       \App\Http\Controllers\ItemsDisplayer::itemsDataToArray();
      * @dataProvider \Tests\DataProviders\DisplayItemsDataProvider::ItemsDataToArray()
      * @depends testItemsDescriptionToArray
      */

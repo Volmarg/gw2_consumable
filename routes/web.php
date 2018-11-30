@@ -12,7 +12,7 @@
 */
 
 Route::prefix('database')->group(function () {
-    Route::get('update', 'DatabaseUpdate@update')->name('databaseUpdate');
+    Route::get('update', 'DatabaseUpdater@update')->name('databaseUpdate');
 });
 
-Route::get('/', 'DisplayItems@all');
+Route::get('/', 'ItemsDisplayer@all');

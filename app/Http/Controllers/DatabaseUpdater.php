@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Curl;
 use App\Consumables;
 
-class DatabaseUpdate extends Controller {
+class DatabaseUpdater extends Controller {
 
-    protected $curl;
-    protected $consumables;
+    private $curl;
+    private $consumables;
 
     public function __construct(Consumables $consumables) {
         $this->curl = new Curl\Curl();
