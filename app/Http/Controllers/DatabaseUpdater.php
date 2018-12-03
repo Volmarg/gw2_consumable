@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Curl;
 use App\Consumables;
+use App\Http\Controllers\ExceptionsHandler;
 
 class DatabaseUpdater extends Controller {
 
@@ -17,16 +18,18 @@ class DatabaseUpdater extends Controller {
     }
 
     public function update() {
+        ExceptionsHandler::expectedDatabaseSqliteExists();
         $all_items_id = $this->getAllItemsId();
         $all_items_data = array_values($this->getAllItemsData($all_items_id));
         $this->insertConsumablesData($all_items_data);
-
-        // Exception test
 
     }
 
     protected function getAllItemsId(): array {
         $all_id = json_decode($this->curl->get('https://api.guildwars2.com/v2/items?type=food'));
+        ExceptionsHandler::expectedNoApiErrors($all_id);
+        ExceptionsHandler::expectedJsonFormat();
+
         return array_chunk($all_id, 200);
     }
 
@@ -62,11 +65,4 @@ class DatabaseUpdater extends Controller {
         }
     }
 
-    private function tests_TODO() {
-        # api returned header code
-        # returned data formad - is in json?
-        # 400 - wrong url
-        # 414 - to big request
-        # test api isOnline
-    }
 }
