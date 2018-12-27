@@ -1,6 +1,8 @@
+// TODO: check potential bug in scenario below:
+// In 1st list pick up Night: Chance to steal, now in next Day: Chance.. You will note that 1st select is being emptied
 FoodAttributesSelectFilter = {
 
-    vueFoodAttributes: {
+    foodAttributes: {
         allFoodItemsWrapper: new Vue({
             el: '#all-food-items-wrapper',
             data: {
@@ -8,67 +10,48 @@ FoodAttributesSelectFilter = {
             }
         }),
 
-        foodAttributesIntoArray: function (reasignValuesOnChange = false) {
+        foodAttributesIntoArray: function () {
             let array_of_attributes = [''];
-            let all_dom_list_elements;
+            let all_dom_list_elements = $('li[data-ref^="oneAttributeOfFood"]');
             let that = this;
 
-            if (reasignValuesOnChange) {
-                all_dom_list_elements = $('#all-food-items-wrapper').find('li');
-                //TODO change this so it can work in both cases with each/forEach
-                //TODO: this is still not working corretly despite the fact that attr's are false it still reads them
-                all_dom_list_elements.each(function (index,item) {
-                    if ($(item).data('attrsAvailable') === "true") {
-                        let item_attribute = that.removeValuesFromItemAttributes(item.innerHTML);
-                        array_of_attributes.push(item_attribute.trim());
-                    }
-                });
-            } else {
-                all_dom_list_elements = this.allFoodItemsWrapper.$refs.oneAttributeOfFood;
-                all_dom_list_elements.forEach(function (item) {
-                    if ($(item).data('attrsAvailable') === true) {
-                        let item_attribute = that.removeValuesFromItemAttributes(item.innerHTML);
-                        array_of_attributes.push(item_attribute.trim());
-                    }
-                });
-            }
-
+            all_dom_list_elements.each(function (index, item) {
+                if ($(item).attr('data-attrs-available').toString() === "true") {
+                    let item_attribute = that.removeValuesFromItemAttributes($(item).html());
+                    array_of_attributes.push(item_attribute.trim());
+                }
+            });
             return array_of_attributes.filter(this.onlyUniqueArrayValues);
         },
 
         onlyUniqueArrayValues: function (value, index, self) {
-            return self.indexOf(value) === index;
+            let self_lowercase = [];
+
+            for (x = 0; x <= self.length - 1; x++) {
+                self_lowercase.push(self[x].toLowerCase());
+            }
+
+            return self_lowercase.indexOf(value.toLowerCase()) === index;
         },
 
         removeValuesFromItemAttributes: function (item_attribute) {
             return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
         },
 
-        fillSelectOptionsWithAttributes: function (onChange = false) {
+        fillSelectOptionsWithAttributes: function () {
             let all_filter_selects = document.querySelectorAll('#food-attribute-filters');
-            let that = this;
             let vue_selects = [];
-            if (onChange) {
-                vue_selects = that.getVueSelects();
-            }
+            let new_food_attributes = this.foodAttributesIntoArray();
 
-            if (vue_selects.length !== 0) {
-                vue_selects.forEach(function (one_select) {
-                    one_select.foodAttributes = that.foodAttributesIntoArray(true);
+            all_filter_selects.forEach(function (item) {
+                let vue_select = new Vue({
+                    el: item,
+                    data: {
+                        foodAttributes: new_food_attributes,
+                    },
                 });
-
-            } else {
-                all_filter_selects.forEach(function (item) {
-                    let vue_select = new Vue({
-                        el: item,
-                        data: {
-                            foodAttributes: that.foodAttributesIntoArray(),
-                        },
-                    });
-                    vue_selects.push(vue_select);
-                });
-                that.setVueSelects(vue_selects);
-            }
+                vue_selects.push(vue_select);
+            });
 
         },
 
@@ -89,21 +72,40 @@ FoodAttributesSelectFilter = {
 
         init: function () {
             let selects = $('[id^="food-attribute-select"]');
-            selects.select2();
-            let refs = FoodAttributesSelectFilter.vueFoodAttributes.getRefs();
+            let refs = FoodAttributesSelectFilter.foodAttributes.getRefs();
             let that = this;
 
-            selects.on("change", function (event) {
+            selects.select2();
+
+            selects.on("change", function () {
                 let all_selects = $('.select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
                 that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options);
-                FoodAttributesSelectFilter.vueFoodAttributes.fillSelectOptionsWithAttributes(true);
+                that.reInitialize(this);
+            });
+        },
 
+        reInitialize: function (target_select) {
+            let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();
+            let select2 = $(target_select);
+            let selected_option = select2.val();
+            let selects = $('[id^="food-attribute-select"]');
+            let text_holder_class = '.select2-selection__rendered';
+
+            selects.each(function (index, item) {
+                //keep selected val
+                let selected_option = '';
+                if ($(item).val() !== '') {
+                    selected_option = $(item).val();
+                }
+                $(item).html('').select2({data: [{id: '', text: ''}]});
+                $(item).html('').select2({data: new_food_attributes});
+                $(item).val(selected_option);
+                $(item).parent().find(text_holder_class).html(selected_option);
 
             });
 
         },
-
 
         filterFoodItems: function filterFoodItems(food_items, selected_options_dom) {
             let that = this;
@@ -120,18 +122,22 @@ FoodAttributesSelectFilter = {
         },
 
         ifItemDescriptionContainsSelectedOption: function (selected_options_dom, jq_food_elem) {
+            // Is this function even correct with those regexps?
+
             let status = true;
 
             selected_options_dom.each(function (index, selected_option_dom) {
+                let pattern = '/[.*+?^${}()|[\\]\\\\]/g'; //old
+                let pattern2=/([+-])?([0-9])*([%])?/g; //new
                 let selected_option_string = $(selected_option_dom).text().trim();
-                let escaped_selected_option_string = selected_option_string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                let escaped_selected_option_string = selected_option_string.replace(pattern, '\\$&'); //what's the point of this if option is already stripped of values
                 let reg = new RegExp(escaped_selected_option_string, "i");
 
-                if (!reg.exec($(jq_food_elem).text().trim())) {
+                if (!reg.exec($(jq_food_elem).text().trim().replace(pattern2, ''))) {
                     status = false;
+                    return false;
                 }
             });
-
 
             return status;
         },
