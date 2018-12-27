@@ -8,15 +8,31 @@ FoodAttributesSelectFilter = {
             }
         }),
 
-        foodAttributesIntoArray: function () {
+        foodAttributesIntoArray: function (reasignValuesOnChange = false) {
             let array_of_attributes = [''];
-            let all_dom_list_elements = this.allFoodItemsWrapper.$refs.oneAttributeOfFood;
+            let all_dom_list_elements;
             let that = this;
 
-            all_dom_list_elements.forEach(function (item) {
-                let item_attribute = that.removeValuesFromItemAttributes(item.innerHTML);
-                array_of_attributes.push(item_attribute.trim());
-            });
+            if (reasignValuesOnChange) {
+                all_dom_list_elements = $('#all-food-items-wrapper').find('li');
+                //TODO change this so it can work in both cases with each/forEach
+                //TODO: this is still not working corretly despite the fact that attr's are false it still reads them
+                all_dom_list_elements.each(function (index,item) {
+                    if ($(item).data('attrsAvailable') === "true") {
+                        let item_attribute = that.removeValuesFromItemAttributes(item.innerHTML);
+                        array_of_attributes.push(item_attribute.trim());
+                    }
+                });
+            } else {
+                all_dom_list_elements = this.allFoodItemsWrapper.$refs.oneAttributeOfFood;
+                all_dom_list_elements.forEach(function (item) {
+                    if ($(item).data('attrsAvailable') === true) {
+                        let item_attribute = that.removeValuesFromItemAttributes(item.innerHTML);
+                        array_of_attributes.push(item_attribute.trim());
+                    }
+                });
+            }
+
             return array_of_attributes.filter(this.onlyUniqueArrayValues);
         },
 
@@ -25,25 +41,47 @@ FoodAttributesSelectFilter = {
         },
 
         removeValuesFromItemAttributes: function (item_attribute) {
-            return item_attribute.replace(/([+-])?([0-9])*([%])?/g,'');
+            return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
         },
 
-        fillSelectOptionsWithAttributes: function () {
+        fillSelectOptionsWithAttributes: function (onChange = false) {
             let all_filter_selects = document.querySelectorAll('#food-attribute-filters');
             let that = this;
+            let vue_selects = [];
+            if (onChange) {
+                vue_selects = that.getVueSelects();
+            }
 
-            all_filter_selects.forEach(function (item) {
-                new Vue({
-                    el: item,
-                    data: {
-                        foodAttributes: that.foodAttributesIntoArray(),
-                    },
+            if (vue_selects.length !== 0) {
+                vue_selects.forEach(function (one_select) {
+                    one_select.foodAttributes = that.foodAttributesIntoArray(true);
                 });
-            });
+
+            } else {
+                all_filter_selects.forEach(function (item) {
+                    let vue_select = new Vue({
+                        el: item,
+                        data: {
+                            foodAttributes: that.foodAttributesIntoArray(),
+                        },
+                    });
+                    vue_selects.push(vue_select);
+                });
+                that.setVueSelects(vue_selects);
+            }
+
         },
 
         getRefs() {
             return this.allFoodItemsWrapper;
+        },
+
+        setVueSelects: function (vue_selects) {
+            window.selects = vue_selects;
+        },
+
+        getVueSelects: function () {
+            return window.selects;
         }
     },
 
@@ -59,9 +97,13 @@ FoodAttributesSelectFilter = {
                 let all_selects = $('.select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
                 that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options);
+                FoodAttributesSelectFilter.vueFoodAttributes.fillSelectOptionsWithAttributes(true);
+
+
             });
 
         },
+
 
         filterFoodItems: function filterFoodItems(food_items, selected_options_dom) {
             let that = this;
@@ -98,8 +140,10 @@ FoodAttributesSelectFilter = {
 
             if (!item_has_option) {
                 jq_food_elem.css({display: 'none'});
+                jq_food_elem.find('li').attr('data-attrs-available', 'false');
             } else {
                 jq_food_elem.css({display: 'block'});
+                jq_food_elem.find('li').attr('data-attrs-available', 'true');
             }
         }
 

@@ -4,7 +4,7 @@
         <img src="{{$icon}}" style="align-self: center;"/>
         <ul>
             @foreach($item_attributes as $one_attribute)
-                <li style="" data-consumable-item-attribute=" {{$one_attribute}}" ref="oneAttributeOfFood">
+                <li style="" data-consumable-item-attribute=" {{$one_attribute}}" ref="oneAttributeOfFood"  data-attrs-available="true">
                     {{$one_attribute}}
                 </li>
             @endforeach
