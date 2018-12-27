@@ -1,4 +1,3 @@
-
 // TODO: check potential bug in scenario below:
 // In 1st list pick up Night: Chance to steal, now in next Day: Chance.. You will note that 1st select is being emptied
 FoodAttributesSelectFilter = {
@@ -73,7 +72,8 @@ FoodAttributesSelectFilter = {
 
         init: function () {
             let selects = $('[id^="food-attribute-select"]');
-            let refs = FoodAttributesSelectFilter.foodAttributes.getRefs();
+            let food = FoodAttributesSelectFilter;
+            let refs = food.foodAttributes.getRefs();
             let that = this;
 
             selects.select2();
@@ -92,17 +92,23 @@ FoodAttributesSelectFilter = {
             let selected_option = select2.val();
             let selects = $('[id^="food-attribute-select"]');
             let text_holder_class = '.select2-selection__rendered';
+            let selected_option_id = '';
 
             selects.each(function (index, item) {
-                //keep selected val
+                if (index === 0) {
+                    let stop = 1;
+                }
+
                 let selected_option = '';
-                if ($(item).val() !== '') {
+                if ($(item).val() !== '' && $(item).val() !== null) {
                     selected_option = $(item).val();
+                    //BUG: Select2 bug, for some reason it removes double space in val(), sadly fix is below
+                    selected_option = selected_option.replace(' Chance', '  Chance');
                 }
                 $(item).html('').select2({data: [{id: '', text: ''}]});
                 $(item).html('').select2({data: new_food_attributes});
                 $(item).val(selected_option);
-                $(item).parent().find(text_holder_class).html(selected_option);
+                $(item).parent().find(text_holder_class).html(selected_option.trim());
 
             });
 
@@ -129,7 +135,7 @@ FoodAttributesSelectFilter = {
 
             selected_options_dom.each(function (index, selected_option_dom) {
                 let pattern = '/[.*+?^${}()|[\\]\\\\]/g'; //old
-                let pattern2=/([+-])?([0-9])*([%])?/g; //new
+                let pattern2 = /([+-])?([0-9])*([%])?/g; //new
                 let selected_option_string = $(selected_option_dom).text().trim();
                 let escaped_selected_option_string = selected_option_string.replace(pattern, '\\$&'); //what's the point of this if option is already stripped of values
                 let reg = new RegExp(escaped_selected_option_string, "i");
