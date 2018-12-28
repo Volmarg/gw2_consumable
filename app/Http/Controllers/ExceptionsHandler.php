@@ -13,7 +13,7 @@ class ExceptionsHandler extends Controller {
     }
 
     public static function expectedDatabaseSqliteExists() {
-        $database_file_location = __DIR__ . '/../../../database/database.sqlite1';
+        $database_file_location = __DIR__ . '/../../../database/database.sqlite';
         if (!file_exists($database_file_location)) {
             self::throwException(new \Exception('Database file not found. Expected location: ' . $database_file_location));
 

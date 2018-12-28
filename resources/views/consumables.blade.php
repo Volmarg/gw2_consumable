@@ -7,6 +7,7 @@
                 @include('Components/foodAttributesFilter')
             </section>
         @endfor
+        @include('Components/menu')
     </section>
 
     <section id="all-food-items-wrapper">

@@ -19,6 +19,7 @@ class DatabaseUpdater extends Controller {
 
     public function update() {
         ExceptionsHandler::expectedDatabaseSqliteExists();
+        $this->consumables->removeAllRows();
         $all_items_id = $this->getAllItemsId();
         $all_items_data = array_values($this->getAllItemsData($all_items_id));
         $this->insertConsumablesData($all_items_data);

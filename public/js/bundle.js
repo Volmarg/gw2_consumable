@@ -27,7 +27,7 @@ FoodAttributesSelectFilter = {
         onlyUniqueArrayValues: function (value, index, self) {
             let self_lowercase = [];
 
-            for (x = 0; x <= self.length - 1; x++) {
+            for (let x = 0; x <= self.length - 1; x++) {
                 self_lowercase.push(self[x].toLowerCase());
             }
 
@@ -82,34 +82,28 @@ FoodAttributesSelectFilter = {
                 let all_selects = $('.select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
                 that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options);
-                that.reInitialize(this);
+                that.reInitialize();
             });
         },
 
-        reInitialize: function (target_select) {
+        reInitialize: function () {
             let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();
-            let select2 = $(target_select);
-            let selected_option = select2.val();
             let selects = $('[id^="food-attribute-select"]');
             let text_holder_class = '.select2-selection__rendered';
-            let selected_option_id = '';
 
             selects.each(function (index, item) {
-                if (index === 0) {
-                    let stop = 1;
-                }
-
                 let selected_option = '';
                 if ($(item).val() !== '' && $(item).val() !== null) {
                     selected_option = $(item).val();
                     //BUG: Select2 bug, for some reason it removes double space in val(), sadly fix is below
+                    //BUG: This issue still raises problems upon selecting Steal as last select
+                    //TODO: add issue on github
                     selected_option = selected_option.replace(' Chance', '  Chance');
                 }
                 $(item).html('').select2({data: [{id: '', text: ''}]});
                 $(item).html('').select2({data: new_food_attributes});
                 $(item).val(selected_option);
                 $(item).parent().find(text_holder_class).html(selected_option.trim());
-
             });
 
         },
@@ -163,11 +157,34 @@ FoodAttributesSelectFilter = {
     },
 };
 
+Ajax = {
+    updateDatabase: function () {
+        let spinning_rings = $('#updateDatabase+.lds-dual-ring');
+        spinning_rings.css({'display': 'block'});
+        alert("Don't refresh or close this page while update is undergoing");
+        $.get("database/update", function () {
+        }).done(function () {
+            spinning_rings.css({'display': 'none'});
+            alert("Update has been finished");
+        }).fail(function () {
+            spinning_rings.css({'display': 'none'});
+            alert("Update attempt has failed");
+        });
+    }
+};
+
 Init = {
     foodAttributesSelect: function () {
         FoodAttributesSelectFilter.foodAttributes.fillSelectOptionsWithAttributes();
         FoodAttributesSelectFilter.select_2.init();
     },
+
+    assignEvents: function () {
+        $('#updateDatabase').on('click', function () {
+            Ajax.updateDatabase();
+        })
+    }
 };
 
 Init.foodAttributesSelect();
+Init.assignEvents();

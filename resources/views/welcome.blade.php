@@ -62,6 +62,34 @@
             font-size: 19px;
             color: rgb(122, 168, 130);
         }
+
+        /* Spinner */
+        .lds-dual-ring {
+            display: inline-block;
+            width: 64px;
+            height: 64px;
+            position: absolute;
+            left: 48%;
+        }
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 46px;
+            height: 46px;
+            margin: 1px;
+            border-radius: 47%;
+            border: 5px solid rgb(63, 126, 236);
+            border-color: rgb(63, 126, 236) transparent rgb(63, 126, 236) transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
