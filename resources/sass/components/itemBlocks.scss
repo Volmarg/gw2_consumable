@@ -1,0 +1,36 @@
+#all-food-items-wrapper > section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.oneItem {
+  background-color: rgba(42, 43, 60, 1);
+  width: 590px;
+  height: 185px;
+  margin: 10px;
+
+  * {
+    font-family: 'Indie Flower', cursive;
+  }
+
+  .detailsWrapper {
+    margin-left: 30px;
+
+  }
+  img {
+    border: 1px solid rgb(138, 141, 144);
+  }
+
+  .itemName {
+    text-align: center;
+    font-size: 19px;
+    letter-spacing: 1.2px;
+    color: rgb(63, 126, 236);
+  }
+
+  li {
+    font-size: 19px;
+    color: rgb(122, 168, 130);
+  }
+}
