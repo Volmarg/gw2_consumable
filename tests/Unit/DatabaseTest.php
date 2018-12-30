@@ -25,7 +25,7 @@ class DatabaseTest extends TestCase {
     }
 
     public function testDatabaseFileExists() {
-        $file = '../..//database/database.sqlite';
+        $file = '../../database/database.sqlite';
         $this->assertFileExists($file);
     }
 
