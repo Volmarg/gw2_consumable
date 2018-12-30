@@ -9,7 +9,7 @@ FoodAttributesSelectFilter = {
         }),
 
         foodAttributesIntoArray: function () {
-            let array_of_attributes = [];
+            let array_of_attributes = [''];
             let all_dom_list_elements = $('li[data-ref^="oneAttributeOfFood"]');
             let that = this;
 
