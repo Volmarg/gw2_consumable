@@ -15,8 +15,7 @@
 <h2>Used tools</h2>
 <ul>
 <li>PHP storm,</li>
-<li>Xampp,</li>
-<li>Larvel,</li>
+<li>LAMP,</li>
 <li>Vagrant,</li>
 <li>Docker,</li>
 <li>Composer,</li>
@@ -24,7 +23,7 @@
 
 <h2>Tech Stack</h2>
 <ul>
-<li>PHP 7,</li>
+<li>PHP 7.2+,</li>
 <li>Laravel 5.7,</li>
 <li>CSS,</li>
 <li>SCSS,</li>
@@ -34,3 +33,22 @@
 <li>phpUnit,</li>
 <li>SonarQube - later for CR,</li>
 </ul>
+
+<h2>Bugs</h2>
+<ul>
+<li> In case You run to empty database problem and won't be able even to click <b>Update</b> button, go to <pre>database/update</pre> page and w8 for it to finish.
+</ul>
+
+<h2>Plans</h2>
+<ul>
+<li> More details displayed in boxes</li>
+<li> Filtering by lvl</li>
+<li> Runes/Sigils filtering by attributes </li>
+<li> Additional menu for swapping bettwen consumables/upgrades </li>
+</ul>
+
+<h2>Problems</h2>
+<ul>
+<li> Not having much time for this so i just play with some update from time to time </li>
+</ul>
+
