@@ -1,5 +1,3 @@
-// TODO: check potential bug in scenario below:
-// In 1st list pick up Night: Chance to steal, now in next Day: Chance.. You will note that 1st select is being emptied
 FoodAttributesSelectFilter = {
 
     foodAttributes: {
@@ -11,7 +9,7 @@ FoodAttributesSelectFilter = {
         }),
 
         foodAttributesIntoArray: function () {
-            let array_of_attributes = [''];
+            let array_of_attributes = [];
             let all_dom_list_elements = $('li[data-ref^="oneAttributeOfFood"]');
             let that = this;
 
@@ -47,7 +45,7 @@ FoodAttributesSelectFilter = {
                 let vue_select = new Vue({
                     el: item,
                     data: {
-                        foodAttributes: new_food_attributes,
+                        foodAttributes: new_food_attributes, //BUG 1: vue messes up select2 list, by adding some extra spaces
                     },
                 });
                 vue_selects.push(vue_select);
@@ -77,6 +75,7 @@ FoodAttributesSelectFilter = {
             let that = this;
 
             selects.select2();
+            that.reInitialize(); //BUG 1 - FIX: jq based reinit is working fine, shouldn't de done that way but that's fastest way
 
             selects.on("change", function () {
                 let all_selects = $('.select2-hidden-accessible');
@@ -95,10 +94,6 @@ FoodAttributesSelectFilter = {
                 let selected_option = '';
                 if ($(item).val() !== '' && $(item).val() !== null) {
                     selected_option = $(item).val();
-                    //BUG: Select2 bug, for some reason it removes double space in val(), sadly fix is below
-                    //BUG: This issue still raises problems upon selecting Steal as last select
-                    //TODO: add issue on github
-                    selected_option = selected_option.replace(' Chance', '  Chance');
                 }
                 $(item).html('').select2({data: [{id: '', text: ''}]});
                 $(item).html('').select2({data: new_food_attributes});
@@ -123,16 +118,12 @@ FoodAttributesSelectFilter = {
         },
 
         ifItemDescriptionContainsSelectedOption: function (selected_options_dom, jq_food_elem) {
-            // Is this function even correct with those regexps?
-
             let status = true;
 
             selected_options_dom.each(function (index, selected_option_dom) {
-                let pattern = '/[.*+?^${}()|[\\]\\\\]/g'; //old
-                let pattern2 = /([+-])?([0-9])*([%])?/g; //new
+                let pattern2 = /([+-])?([0-9])*([%])?/g;
                 let selected_option_string = $(selected_option_dom).text().trim();
-                let escaped_selected_option_string = selected_option_string.replace(pattern, '\\$&'); //what's the point of this if option is already stripped of values
-                let reg = new RegExp(escaped_selected_option_string, "i");
+                let reg = new RegExp(selected_option_string, "i");
 
                 if (!reg.exec($(jq_food_elem).text().trim().replace(pattern2, ''))) {
                     status = false;

@@ -26,7 +26,8 @@
 <li>CSS,</li>
 <li>SCSS,</li>
 <li>JS,</li>
-<li>Vue JS,(just checking what it is)</li>
+<li>JQ/VueJs</li>
 <li>Sqlite,</li>
 <li>phpUnit,</li>
+<li>SonarQube - later for CR,</li>
 </ul>
