@@ -1,10 +1,10 @@
-<section class="oneItem" style="" ref="oneFoodItem" style="">
+<section class="oneItem" ref="oneFoodItem">
     <p class="itemName"><b>{{$name}}</b></p>
-    <section style="display:flex;" class="detailsWrapper">
-        <img src="{{$icon}}" style="align-self: center;"/>
+    <section class="detailsWrapper">
+        <img src="{{$icon}}"/>
         <ul>
             @foreach($item_attributes as $one_attribute)
-                <li style="" data-consumable-item-attribute=" {{$one_attribute}}" ref="oneAttributeOfFood"  data-attrs-available="true">
+                <li style="" data-consumable-item-attribute=" {{$one_attribute}}" data-ref="oneAttributeOfFood"  data-attrs-available="true">
                     {{$one_attribute}}
                 </li>
             @endforeach

@@ -16,10 +16,12 @@
 
   .detailsWrapper {
     margin-left: 30px;
-
+    display: flex;
   }
   img {
     border: 1px solid rgb(138, 141, 144);
+    align-self: center;
+    max-width: 65px;
   }
 
   .itemName {

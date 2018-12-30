@@ -3,6 +3,11 @@
     justify-content: center;
 }
 
+.menu-elements-wrapper {
+    margin: 0 auto;
+    margin-top: 5px;
+}
+
 #all-food-items-wrapper > section {
     display: flex;
     flex-wrap: wrap;
@@ -15,21 +20,29 @@
     height: 185px;
     margin: 10px;
 }
+
 .oneItem * {
     font-family: "Indie Flower", cursive;
 }
+
 .oneItem .detailsWrapper {
     margin-left: 30px;
+    display: flex;
 }
+
 .oneItem img {
     border: 1px solid #8a8d90;
+    align-self: center;
+    max-width: 65px;
 }
+
 .oneItem .itemName {
     text-align: center;
     font-size: 19px;
     letter-spacing: 1.2px;
     color: #3f7eec;
 }
+
 .oneItem li {
     font-size: 19px;
     color: #7aa882;
@@ -42,6 +55,7 @@
     position: absolute;
     left: 48%;
 }
+
 .lds-dual-ring:after {
     content: " ";
     display: block;
