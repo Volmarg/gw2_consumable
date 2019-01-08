@@ -35,4 +35,38 @@
     font-size: 19px;
     color: rgb(122, 168, 130);
   }
+
+  .hr {
+    border-top: 1px rgba(255, 255, 255, 0.2) solid;
+  }
+
+  .itemData {
+    padding:10px;
+
+    color: white;
+    font-size: 17px;
+    color: #7aa882;
+    font-weight: 100;
+  }
+
+  .rarityRare{
+    color: #ffd73a;
+  }
+
+  .rarityBasic{
+    color: #e8e2ff;
+  }
+
+  .rarityFine{
+    color: #2544ff;
+  }
+
+  .rarityExotic{
+    color: #ff640d;
+  }
+
+  .rarityMasterwork{
+    color: #068900;
+  }
+
 }

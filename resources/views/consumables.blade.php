@@ -22,6 +22,12 @@
                     @slot('icon')
                         {{$one_item['item_data']->icon}}
                     @endslot
+                    @slot('level')
+                        {{$one_item['item_data']->level}}
+                    @endslot
+                    @slot('rarity')
+                        {{$one_item['item_data']->rarity}}
+                    @endslot
                     @endsingleItem
                 @endif
             @endforeach

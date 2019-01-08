@@ -43,6 +43,39 @@
     color: #3f7eec;
 }
 
+.oneItem .hr {
+    border-top: 1px rgba(255, 255, 255, 0.2) solid;
+}
+
+.oneItem   .itemData {
+    padding:10px;
+
+    color: white;
+    font-size: 17px;
+    color: #7aa882;
+    font-weight: 100;
+}
+
+.oneItem .rarityRare{
+    color: #ffd73a;
+}
+
+.oneItem .rarityBasic{
+    color: #e8e2ff;
+}
+
+.oneItem .rarityFine{
+    color: #2544ff;
+}
+
+.oneItem .rarityExotic{
+    color: #ff640d;
+}
+
+.oneItem .rarityMasterwork{
+    color: #068900;
+}
+
 .oneItem li {
     font-size: 19px;
     color: #7aa882;
