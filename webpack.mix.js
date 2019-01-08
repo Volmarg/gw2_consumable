@@ -12,12 +12,19 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css');
 
 mix.scripts(
     [
         'resources/js/components/nonVue/FoodAttributesSelectFilter.js',
         'resources/js/Init.js',
+    ],
+    'public/js/bundle.js'
+);
+
+mix.scripts(
+    [
+        'resources/js/utils.js',
     ],
     'public/js/bundle.js'
 );

@@ -121,8 +121,9 @@ FoodAttributesSelectFilter = {
             let status = true;
 
             selected_options_dom.each(function (index, selected_option_dom) {
+                let utils=Utils;
                 let pattern2 = /([+-])?([0-9])*([%])?/g;
-                let selected_option_string = $(selected_option_dom).text().trim();
+                let selected_option_string = utils.escapeRegExp($(selected_option_dom).text().trim());
                 let reg = new RegExp(selected_option_string, "i");
 
                 if (!reg.exec($(jq_food_elem).text().trim().replace(pattern2, ''))) {

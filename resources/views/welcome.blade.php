@@ -28,6 +28,7 @@
 </div>
 
 <script src="{{ asset('js/bundle.js') }}"></script>
+<script src="{{ asset('js/utils.js') }}"></script>
 
 </body>
 </html>
