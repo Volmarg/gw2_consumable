@@ -7,6 +7,9 @@
                 @include('Components/foodAttributesFilter')
             </section>
         @endfor
+        <section id="common-attribute-filter" ref="common-attribute-filters">
+            @include('Components/commonAttributesFilter')
+        </section>
         @include('Components/menu')
     </section>
 

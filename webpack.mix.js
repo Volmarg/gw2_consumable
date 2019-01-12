@@ -17,6 +17,8 @@ mix.js('resources/js/app.js', 'public/js')
 mix.scripts(
     [
         'resources/js/components/nonVue/FoodAttributesSelectFilter.js',
+        'resources/js/components/nonVue/CommonAttributesSelectFilter.js',
+        'resources/js/ajax.js',
         'resources/js/Init.js',
     ],
     'public/js/bundle.js'
@@ -26,5 +28,5 @@ mix.scripts(
     [
         'resources/js/utils.js',
     ],
-    'public/js/bundle.js'
+    'public/js/utils.js'
 );

@@ -22,7 +22,7 @@ FoodAttributesSelectFilter = {
             return array_of_attributes.filter(this.onlyUniqueArrayValues);
         },
 
-        onlyUniqueArrayValues: function (value, index, self) {
+        onlyUniqueArrayValues: function (value, index, self) { //TODO: move this to utils + change reference here
             let self_lowercase = [];
 
             for (let x = 0; x <= self.length - 1; x++) {
@@ -122,7 +122,7 @@ FoodAttributesSelectFilter = {
 
             selected_options_dom.each(function (index, selected_option_dom) {
                 let pattern2 = /([+-])?([0-9])*([%])?/g;
-                let selected_option_string = $(selected_option_dom).text().trim();
+                let selected_option_string = Utils.escapeRegExp($(selected_option_dom).text().trim());
                 let reg = new RegExp(selected_option_string, "i");
 
                 if (!reg.exec($(jq_food_elem).text().trim().replace(pattern2, ''))) {

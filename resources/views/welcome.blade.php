@@ -23,12 +23,14 @@
 <div class="flex-center position-ref full-height" id="app">
 
     @yield('filters')
-    @yield('body-center')
-
+    <section id="all-items-wrapper">
+        @yield('body-center')
+    </section>
 </div>
 
-<script src="{{ asset('js/bundle.js') }}"></script>
 <script src="{{ asset('js/utils.js') }}"></script>
+<script src="{{ asset('js/bundle.js') }}"></script>
+
 
 </body>
 </html>
