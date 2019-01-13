@@ -8,6 +8,7 @@ CommonAttributesSelectFilter = {
             array_of_attribute_values.push($(item).text());
         });
 
+
         return array_of_attribute_values.filter(Utils.onlyUniqueArrayValues).sort((a, b) => {
             return b - a
         });
@@ -23,8 +24,12 @@ CommonAttributesSelectFilter = {
         });
     },
     build_selector: {
-        forAttribute: function (selector_prefix) {
-            return '#' + selector_prefix + '-attribute-select';
+        forAttribute: function (selector_prefix, no_prefix = false) {
+            if (no_prefix === true) {
+                return selector_prefix + '-attribute-select';
+            } else {
+                return '#' + selector_prefix + '-attribute-select';
+            }
         }
     },
     levels_attribute: {
@@ -42,6 +47,22 @@ CommonAttributesSelectFilter = {
             let selector = CommonAttributesSelectFilter.build_selector;
             $(selector.forAttribute('level')).select2();
             $(selector.forAttribute('rarity')).select2();
-        }
+        },
+        reInitialize: function (attributes, attribute_type) {
+            let selects = $('[id^="' + CommonAttributesSelectFilter.build_selector.forAttribute(attribute_type, true) + '"]');
+            let text_holder_class = '.select2-selection__rendered';
+
+            selects.each(function (index, item) {
+                let selected_option = '';
+                if ($(item).val() !== '' && $(item).val() !== null) {
+                    selected_option = $(item).val();
+                }
+                $(item).html('').select2({data: [{id: '', text: ''}]});
+                $(item).html('').select2({data: attributes});
+                $(item).val(selected_option);
+                $(item).parent().find(text_holder_class).html(selected_option.trim());
+            });
+
+        },
     }
 };

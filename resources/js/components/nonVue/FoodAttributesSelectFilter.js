@@ -19,17 +19,7 @@ FoodAttributesSelectFilter = {
                     array_of_attributes.push(item_attribute.trim());
                 }
             });
-            return array_of_attributes.filter(this.onlyUniqueArrayValues);
-        },
-
-        onlyUniqueArrayValues: function (value, index, self) { //TODO: move this to utils + change reference here
-            let self_lowercase = [];
-
-            for (let x = 0; x <= self.length - 1; x++) {
-                self_lowercase.push(self[x].toLowerCase());
-            }
-
-            return self_lowercase.indexOf(value.toLowerCase()) === index;
+            return array_of_attributes.filter(Utils.onlyUniqueArrayValues);//TODO add as Utils
         },
 
         removeValuesFromItemAttributes: function (item_attribute) {
@@ -87,23 +77,11 @@ FoodAttributesSelectFilter = {
 
         reInitialize: function () {
             let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();
-            let selects = $('[id^="food-attribute-select"]');
-            let text_holder_class = '.select2-selection__rendered';
-
-            selects.each(function (index, item) {
-                let selected_option = '';
-                if ($(item).val() !== '' && $(item).val() !== null) {
-                    selected_option = $(item).val();
-                }
-                $(item).html('').select2({data: [{id: '', text: ''}]});
-                $(item).html('').select2({data: new_food_attributes});
-                $(item).val(selected_option);
-                $(item).parent().find(text_holder_class).html(selected_option.trim());
-            });
-
+            CommonAttributesSelectFilter.select_2.reInitialize(new_food_attributes, 'food');
         },
 
         filterFoodItems: function filterFoodItems(food_items, selected_options_dom) {
+            //here is some problem with regex or something
             let that = this;
 
             food_items.forEach(function (food_element) {

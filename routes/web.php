@@ -16,3 +16,4 @@ Route::prefix('database')->group(function () {
 });
 
 Route::get('/', 'ItemsDisplayer@all');
+Route::get('/fix', 'Fixer@view');
