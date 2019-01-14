@@ -1,5 +1,4 @@
 FoodAttributesSelectFilter = {
-
     foodAttributes: {
         allFoodItemsWrapper: new Vue({
             el: '#all-food-items-wrapper',
@@ -7,7 +6,6 @@ FoodAttributesSelectFilter = {
                 vue_loop_repeats: 1
             }
         }),
-
         foodAttributesIntoArray: function () {
             let array_of_attributes = [''];
             let all_dom_list_elements = $('li[data-ref^="oneAttributeOfFood"]');
@@ -15,17 +13,12 @@ FoodAttributesSelectFilter = {
 
             all_dom_list_elements.each(function (index, item) {
                 if ($(item).attr('data-attrs-available').toString() === "true") {
-                    let item_attribute = that.removeValuesFromItemAttributes($(item).html());
+                    let item_attribute = CommonAttributesSelectFilter.removeValuesFromItemAttributes($(item).html());
                     array_of_attributes.push(item_attribute.trim());
                 }
             });
-            return array_of_attributes.filter(Utils.onlyUniqueArrayValues);//TODO add as Utils
+            return array_of_attributes.filter(Utils.onlyUniqueArrayValues);
         },
-
-        removeValuesFromItemAttributes: function (item_attribute) {
-            return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
-        },
-
         fillSelectOptionsWithAttributes: function () {
             let all_filter_selects = document.querySelectorAll('#food-attribute-filters');
             let vue_selects = [];
@@ -53,7 +46,8 @@ FoodAttributesSelectFilter = {
 
         getVueSelects: function () {
             return window.selects;
-        }
+        },
+
     },
 
     select_2: {
@@ -68,7 +62,7 @@ FoodAttributesSelectFilter = {
             that.reInitialize(); //BUG 1 - FIX: jq based reinit is working fine, shouldn't de done that way but that's fastest way
 
             selects.on("change", function () {
-                let all_selects = $('.select2-hidden-accessible');
+                let all_selects = $('.foodAttributesWrapper .select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
                 that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options);
                 that.reInitialize();
@@ -81,7 +75,6 @@ FoodAttributesSelectFilter = {
         },
 
         filterFoodItems: function filterFoodItems(food_items, selected_options_dom) {
-            //here is some problem with regex or something
             let that = this;
 
             food_items.forEach(function (food_element) {
@@ -142,7 +135,7 @@ CommonAttributesSelectFilter = {
     },
     fillSelectOptionsWithAttributes: function (item_type, searched_attribute_selector, selector_prefix) {
         let all_attribute_values = CommonAttributesSelectFilter.getAttributeValues(item_type, searched_attribute_selector);
-        let selector = CommonAttributesSelectFilter.build_selector.forAttribute(selector_prefix);
+        let selector = CommonAttributesSelectFilter.build_selector.forAttributeAndSelects(selector_prefix);
         new Vue({
             el: selector,
             data: {
@@ -150,18 +143,39 @@ CommonAttributesSelectFilter = {
             },
         });
     },
+    attachOptionsReinitializationOnChange: function (selector_prefix) {
+        let that = this;
+        let selects = $(that.build_selector.forAttributeAndSelects(selector_prefix));
+        selects.on("change", function () {
+            let all_selects = $(that.build_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
+            let all_selected_options = all_selects.find('option:selected');
+            //that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options); // TODO: rewrite filteringItems for Common use
+            //that.reInitialize(); //TODO: test reinit function
+        });
+    },
+    removeValuesFromItemAttributes: function (item_attribute) {
+        return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
+    },
     build_selector: {
-        forAttribute: function (selector_prefix, no_prefix = false) {
+        forAttributeAndSelects: function (selector_prefix, no_prefix = false) {
             if (no_prefix === true) {
                 return selector_prefix + '-attribute-select';
             } else {
                 return '#' + selector_prefix + '-attribute-select';
             }
-        }
-    },
+        },
+        forWrappers: function (selector_prefix, no_prefix = false) {
+            if (no_prefix === true) {
+                return selector_prefix + 'AttributesWrapper';
+            } else {
+                return '.' + selector_prefix + 'AttributesWrapper';
+            }
+        },
+    }, 
     levels_attribute: {
         init: function () {
             CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', '.itemLevel', 'level');
+            CommonAttributesSelectFilter.attachOptionsReinitializationOnChange('level');
         },
     },
     rarity_attribute: {
@@ -172,11 +186,11 @@ CommonAttributesSelectFilter = {
     select_2: {
         init: function () {
             let selector = CommonAttributesSelectFilter.build_selector;
-            $(selector.forAttribute('level')).select2();
-            $(selector.forAttribute('rarity')).select2();
+            $(selector.forAttributeAndSelects('level')).select2();
+            $(selector.forAttributeAndSelects('rarity')).select2();
         },
         reInitialize: function (attributes, attribute_type) {
-            let selects = $('[id^="' + CommonAttributesSelectFilter.build_selector.forAttribute(attribute_type, true) + '"]');
+            let selects = $('[id^="' + CommonAttributesSelectFilter.build_selector.forAttributeAndSelects(attribute_type, true) + '"]');
             let text_holder_class = '.select2-selection__rendered';
 
             selects.each(function (index, item) {
@@ -218,7 +232,7 @@ Init = {
     commonAttributesSelect: function () {
         CommonAttributesSelectFilter.levels_attribute.init();
         CommonAttributesSelectFilter.rarity_attribute.init();
-        //CommonAttributesSelectFilter.select_2.init(); //BUG: requires reinit function to be rewritten for this new selects
+        CommonAttributesSelectFilter.select_2.init(); //BUG: requires reinit function to be rewritten for this new selects
     },
 
 
