@@ -6,7 +6,7 @@ FoodAttributesSelectFilter = {
                 vue_loop_repeats: 1
             }
         }),
-        foodAttributesIntoArray: function () {
+        foodAttributesIntoArray: function () { //TODO: refractor in Common if it's possible
             let array_of_attributes = [''];
             let all_dom_list_elements = $('li[data-ref^="oneAttributeOfFood"]');
             let that = this;
@@ -75,46 +75,18 @@ FoodAttributesSelectFilter = {
         },
 
         filterFoodItems: function filterFoodItems(food_items, selected_options_dom) {
-            let that = this;
+            let commons = CommonAttributesSelectFilter;
 
             food_items.forEach(function (food_element) {
                 let jq_food_elem = $(food_element);
                 let list_elements = jq_food_elem.find('li');
 
                 list_elements.each(function () {
-                    let item_has_option = that.ifItemDescriptionContainsSelectedOption(selected_options_dom, jq_food_elem);
-                    that.changeItemVisibility(jq_food_elem, item_has_option);
+                    let item_has_option = commons.ifItemContainsSelectedOption(selected_options_dom, jq_food_elem);
+                    commons.changeItemVisibility(jq_food_elem, item_has_option);
                 });
             });
         },
-
-        ifItemDescriptionContainsSelectedOption: function (selected_options_dom, jq_food_elem) {
-            let status = true;
-
-            selected_options_dom.each(function (index, selected_option_dom) {
-                let pattern2 = /([+-])?([0-9])*([%])?/g;
-                let selected_option_string = Utils.escapeRegExp($(selected_option_dom).text().trim());
-                let reg = new RegExp(selected_option_string, "i");
-
-                if (!reg.exec($(jq_food_elem).text().trim().replace(pattern2, ''))) {
-                    status = false;
-                    return false;
-                }
-            });
-
-            return status;
-        },
-
-        changeItemVisibility: function (jq_food_elem, item_has_option) {
-
-            if (!item_has_option) {
-                jq_food_elem.css({display: 'none'});
-                jq_food_elem.find('li').attr('data-attrs-available', 'false');
-            } else {
-                jq_food_elem.css({display: 'block'});
-                jq_food_elem.find('li').attr('data-attrs-available', 'true');
-            }
-        }
 
     },
 };
