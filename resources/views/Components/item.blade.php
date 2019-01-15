@@ -12,7 +12,7 @@
         </ul>
     </section>
     <p class="itemData">
-        <b class="itemLevel" data-attrs-available="true">{{$level}}</b>
-        <b class="itemRarity rarity{{$rarity}}" data-attrs-available="true">{{$rarity}}</b>
+        <b class="level" data-attrs-available="true">{{$level}}</b>
+        <b class="rarity{{$rarity}} rarity" data-attrs-available="true">{{$rarity}}</b>
     </p>
 </section>

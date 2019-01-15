@@ -12,8 +12,8 @@ CommonAttributesSelectFilter = {
             return b - a
         });
     },
-    fillSelectOptionsWithAttributes: function (item_type, searched_attribute_selector, selector_prefix) {
-        let all_attribute_values = CommonAttributesSelectFilter.getAttributeValues(item_type, searched_attribute_selector);
+    fillSelectOptionsWithAttributes: function (item_type, selector_prefix) {
+        let all_attribute_values = CommonAttributesSelectFilter.getAttributeValues(item_type, '.' + selector_prefix);
         let selector = CommonAttributesSelectFilter.build_selector.forAttributesSelects(selector_prefix);
         new Vue({
             el: selector,
@@ -26,8 +26,7 @@ CommonAttributesSelectFilter = {
         let that = this;
         let selects = $(that.build_selector.forAttributesSelects(selector_prefix));
         selects.on("change", function () {
-            let attributes = [1, 2, 3]; //TODO: make that generic someway
-            attributes = that.getAttributesAsArray('.itemLevel', false);   //todo - use prefix here
+            let attributes = that.getAttributesAsArray('.' + selector_prefix, false);
             let all_selects = $(that.build_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
             let all_selected_options = all_selects.find('option:selected');
             //that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options); // TODO: rewrite filteringItems for Common use
@@ -103,8 +102,9 @@ CommonAttributesSelectFilter = {
     },
     levels_attribute: {
         init: function () {
-            CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', '.itemLevel', 'level'); //TODO: remove 2nd param and use same class for level
-            CommonAttributesSelectFilter.attachOptionsReinitializationOnChange('level');
+            let selector_prefix = 'level';
+            CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
+            CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
         },
         reInitialize: function () {
             let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();
@@ -114,7 +114,9 @@ CommonAttributesSelectFilter = {
     },
     rarity_attribute: {
         init: function () {
-            CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', '.itemRarity', 'rarity'); //TODO: as above, use just rarity
+            let selector_prefix = 'rarity';
+            CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
+            CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
         },
     },
     select_2: {
