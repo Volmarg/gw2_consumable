@@ -1,4 +1,18 @@
 CommonAttributesSelectFilter = {
+    filterItems: function (selected_options_dom, selector_prefix = true) { //TODO: use it in foodFilter as well
+        let items = $('.oneItem'); //as param?
+        let commons = CommonAttributesSelectFilter;
+
+        $(items).each(function (index, elements) {
+            if (selector_prefix) {
+                elements = $(elements).find('.' + selector_prefix);
+            }
+            elements.each(function () {
+                let item_has_option = commons.ifItemContainsSelectedOption(selected_options_dom, $(elements), false);
+                commons.changeItemVisibility($(elements), item_has_option);
+            });
+        });
+    },
     getAttributeValues: function (item_type, searched_attribute_selector) { //BUG: getAttributesAsArray - duplicate
         let all_items_of_type = $('#all-' + item_type + '-items-wrapper');
         let all_levels = $(all_items_of_type).find(searched_attribute_selector);
@@ -29,22 +43,23 @@ CommonAttributesSelectFilter = {
             let attributes = that.getAttributesAsArray('.' + selector_prefix, false);
             let all_selects = $(that.build_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
             let all_selected_options = all_selects.find('option:selected');
-            //that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options); // TODO: rewrite filteringItems for Common use
+
+            that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
             that.select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
         });
     },
     removeValuesFromItemAttributes: function (item_attribute) {
         return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
     },
-    ifItemContainsSelectedOption: function (selected_options_dom, jq_food_elem) { //TODO: refractor with common if possible
+    ifItemContainsSelectedOption: function (selected_options_dom, element, escape_numbers = true) { //TODO: refractor with common if possible
         let status = true;
 
         selected_options_dom.each(function (index, selected_option_dom) {
-            let pattern2 = /([+-])?([0-9])*([%])?/g;
+            let pattern2 = (escape_numbers ? /([+-])?([0-9])*([%])?/g : /([+-])?([%])?/g);
             let selected_option_string = Utils.escapeRegExp($(selected_option_dom).text().trim());
             let reg = new RegExp(selected_option_string, "i");
 
-            if (!reg.exec($(jq_food_elem).text().trim().replace(pattern2, ''))) {
+            if (!reg.exec($(element).text().trim().replace(pattern2, ''))) {
                 status = false;
                 return false;
             }
@@ -53,6 +68,10 @@ CommonAttributesSelectFilter = {
         return status;
     },
     changeItemVisibility: function (jq_food_elem, item_has_option) {
+        if (!jq_food_elem.hasClass('oneItem')) {
+            jq_food_elem = jq_food_elem.closest('.oneItem');
+        }
+
         if (!item_has_option) {
             jq_food_elem.css({display: 'none'});
             jq_food_elem.find('li').attr('data-attrs-available', 'false');
@@ -141,5 +160,5 @@ CommonAttributesSelectFilter = {
             });
 
         },
-    }
+    },
 };
