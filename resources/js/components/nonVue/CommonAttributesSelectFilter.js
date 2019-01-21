@@ -133,7 +133,7 @@ CommonAttributesSelectFilter = {
             CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
         },
         reInitialize: function () {
-            let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();
+            let new_food_attributes = FoodAttributesSelectFilter.food_attributes.foodAttributesIntoArray();
             CommonAttributesSelectFilter.select_2.reInitialize(new_food_attributes, 'food');
         },
 

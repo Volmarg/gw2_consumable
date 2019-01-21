@@ -1,15 +1,14 @@
 FoodAttributesSelectFilter = {
-    foodAttributes: { //change to camel_case
+    food_attributes: {
         allFoodItemsWrapper: new Vue({
             el: '#all-food-items-wrapper',
             data: {
                 vue_loop_repeats: 1
             }
         }),
-        foodAttributesIntoArray: function () { //TODO: refractor in Common if it's possible
+        foodAttributesIntoArray: function () {
             let array_of_attributes = [''];
             let all_dom_list_elements = $('li[data-ref^="oneAttributeOfFood"]');
-            let that = this;
 
             all_dom_list_elements.each(function (index, item) {
                 if ($(item).attr('data-attrs-available').toString() === "true") {
@@ -28,7 +27,7 @@ FoodAttributesSelectFilter = {
                 let vue_select = new Vue({
                     el: item,
                     data: {
-                        foodAttributes: new_food_attributes, //BUG 1: vue messes up select2 list, by adding some extra spaces
+                        food_attributes: new_food_attributes, //BUG 1: vue messes up select2 list, by adding some extra spaces
                     },
                 });
                 vue_selects.push(vue_select);
@@ -45,13 +44,10 @@ FoodAttributesSelectFilter = {
             return window.selects;
         },
     },
-
     select_2: {
 
         init: function () {
             let selects = $('[id^="food-attribute-select"]');
-            let food = FoodAttributesSelectFilter;
-            let refs = food.foodAttributes.getRefs();
             let that = this;
 
             selects.select2();
@@ -60,29 +56,13 @@ FoodAttributesSelectFilter = {
             selects.on("change", function () { //TODO Use OnChange from Common
                 let all_selects = $('.foodAttributesWrapper .select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
-                that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options);
+                CommonAttributesSelectFilter.filterItems(all_selected_options, '.food');
                 that.reInitialize();
             });
-        }, //TODO move that part to fooAttribute
-
+        },
         reInitialize: function () {
-            let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();
+            let new_food_attributes = FoodAttributesSelectFilter.food_attributes.foodAttributesIntoArray();
             CommonAttributesSelectFilter.select_2.reInitialize(new_food_attributes, 'food');
         },
-
-        filterFoodItems: function filterFoodItems(food_items, selected_options_dom) {
-            let commons = CommonAttributesSelectFilter;
-
-            food_items.forEach(function (food_element) {
-                let jq_food_elem = $(food_element);
-                let list_elements = jq_food_elem.find('li');
-
-                list_elements.each(function () {
-                    let item_has_option = commons.ifItemContainsSelectedOption(selected_options_dom, jq_food_elem);
-                    commons.changeItemVisibility(jq_food_elem, item_has_option);
-                });
-            });
-        },
-
     },
 };

@@ -1,5 +1,5 @@
 FoodAttributesSelectFilter = {
-    foodAttributes: { //change to camel_case
+    food_attributes: { //change to camel_case
         allFoodItemsWrapper: new Vue({
             el: '#all-food-items-wrapper',
             data: {
@@ -28,7 +28,7 @@ FoodAttributesSelectFilter = {
                 let vue_select = new Vue({
                     el: item,
                     data: {
-                        foodAttributes: new_food_attributes, //BUG 1: vue messes up select2 list, by adding some extra spaces
+                        food_attributes: new_food_attributes, //BUG 1: vue messes up select2 list, by adding some extra spaces
                     },
                 });
                 vue_selects.push(vue_select);
@@ -51,7 +51,7 @@ FoodAttributesSelectFilter = {
         init: function () {
             let selects = $('[id^="food-attribute-select"]');
             let food = FoodAttributesSelectFilter;
-            let refs = food.foodAttributes.getRefs();
+            let refs = food.food_attributes.getRefs();
             let that = this;
 
             selects.select2();
@@ -60,13 +60,13 @@ FoodAttributesSelectFilter = {
             selects.on("change", function () { //TODO Use OnChange from Common
                 let all_selects = $('.foodAttributesWrapper .select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
-                that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options);
+                CommonAttributesSelectFilter.filterItems(all_selected_options, 'food');
                 that.reInitialize();
             });
         }, //TODO move that part to fooAttribute
 
         reInitialize: function () {
-            let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();
+            let new_food_attributes = FoodAttributesSelectFilter.food_attributes.foodAttributesIntoArray();
             CommonAttributesSelectFilter.select_2.reInitialize(new_food_attributes, 'food');
         },
 
@@ -222,7 +222,7 @@ CommonAttributesSelectFilter = {
             CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
         },
         reInitialize: function () {
-            let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();
+            let new_food_attributes = FoodAttributesSelectFilter.food_attributes.foodAttributesIntoArray();
             CommonAttributesSelectFilter.select_2.reInitialize(new_food_attributes, 'food');
         },
 
@@ -282,7 +282,7 @@ Ajax = {
 
 Init = {
     foodAttributesSelect: function () {
-        FoodAttributesSelectFilter.foodAttributes.fillSelectOptionsWithAttributes();
+        FoodAttributesSelectFilter.food_attributes.fillSelectOptionsWithAttributes();
         FoodAttributesSelectFilter.select_2.init();
     },
 
