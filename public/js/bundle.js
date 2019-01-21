@@ -1,5 +1,5 @@
 FoodAttributesSelectFilter = {
-    foodAttributes: {
+    foodAttributes: { //change to camel_case
         allFoodItemsWrapper: new Vue({
             el: '#all-food-items-wrapper',
             data: {
@@ -35,19 +35,15 @@ FoodAttributesSelectFilter = {
             });
 
         },
-
         getRefs() {
             return this.allFoodItemsWrapper;
         },
-
         setVueSelects: function (vue_selects) {
             window.selects = vue_selects;
         },
-
         getVueSelects: function () {
             return window.selects;
         },
-
     },
 
     select_2: {
@@ -61,13 +57,13 @@ FoodAttributesSelectFilter = {
             selects.select2();
             that.reInitialize(); //BUG 1 - FIX: jq based reinit is working fine, shouldn't de done that way but that's fastest way
 
-            selects.on("change", function () {
+            selects.on("change", function () { //TODO Use OnChange from Common
                 let all_selects = $('.foodAttributesWrapper .select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
                 that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options);
                 that.reInitialize();
             });
-        },
+        }, //TODO move that part to fooAttribute
 
         reInitialize: function () {
             let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();
@@ -134,19 +130,24 @@ CommonAttributesSelectFilter = {
         selects.on("change", function () {
             let attributes = that.getAttributesAsArray('.' + selector_prefix, false);
             let all_selects = $(that.build_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
-            let all_selected_options = all_selects.find('option:selected');
 
-            that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
-            that.select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
+            all_selects.each((index, item) => {
+                console.log($(item));
+                let all_selected_options = $(item).find('option:selected');
+                that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
+                that.select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
+            });
+
+            that.select_2.reinitializeAllSelects();
         });
     },
     removeValuesFromItemAttributes: function (item_attribute) {
         return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
     },
-    ifItemContainsSelectedOption: function (selected_options_dom, element, escape_numbers = true) { //TODO: refractor with common if possible
+    ifItemContainsSelectedOption: function (selected_option, element, escape_numbers = true) { //TODO: refractor with common if possible
         let status = true;
 
-        selected_options_dom.each(function (index, selected_option_dom) {
+        selected_option.each(function (index, selected_option_dom) {
             let pattern2 = (escape_numbers ? /([+-])?([0-9])*([%])?/g : /([+-])?([%])?/g);
             let selected_option_string = Utils.escapeRegExp($(selected_option_dom).text().trim());
             let reg = new RegExp(selected_option_string, "i");
@@ -159,37 +160,40 @@ CommonAttributesSelectFilter = {
 
         return status;
     },
-    changeItemVisibility: function (jq_food_elem, item_has_option) {
-        if (!jq_food_elem.hasClass('oneItem')) {
-            jq_food_elem = jq_food_elem.closest('.oneItem');
+    changeItemVisibility: function (item, has_selected_option) {
+        if (!item.hasClass('oneItem')) {
+            item = item.closest('.oneItem');
         }
 
-        if (!item_has_option) {
-            jq_food_elem.css({display: 'none'});
-            jq_food_elem.find('li').attr('data-attrs-available', 'false');
+        if (!has_selected_option) {
+            item.css({display: 'none'});
+            item.find('li').attr('data-attrs-available', 'false');
         } else {
-            jq_food_elem.css({display: 'block'});
-            jq_food_elem.find('li').attr('data-attrs-available', 'true');
+            item.css({display: 'block'});
+            item.find('li').attr('data-attrs-available', 'true');
         }
     },
-    getAttributesAsArray: function (selector = false, clear = false) {
+    getAttributesAsArray: function (additional_selector = false, clear_values = false) {
         let array_of_attributes = [''];
         let all_dom_list_elements = $('.oneItem'); //this selector should by added as param?
 
         all_dom_list_elements.each(function (index, item) {
             let item_ = item; //unnecessary?
-            if (selector !== false) {
-                item = $(item).find(selector);
+            if (additional_selector !== false) {
+                item = $(item).find(additional_selector);
             }
 
-            if ($(item).attr('data-attrs-available').toString() === "true") {
-                let item_attribute = $(item).html();
-                if (clear === true) {
-                    item_attribute = CommonAttributesSelectFilter.removeValuesFromItemAttributes(item_attribute);
+
+            $(item).each((index, item) => {
+                if ($(item).attr('data-attrs-available').toString() === "true") {
+                    let item_attribute = $(item).html();
+                    if (clear_values === true) {
+                        item_attribute = CommonAttributesSelectFilter.removeValuesFromItemAttributes(item_attribute);
+                    }
+
+                    array_of_attributes.push(item_attribute.trim());
                 }
-
-                array_of_attributes.push(item_attribute.trim());
-            }
+            });
         });
         return array_of_attributes.filter(Utils.onlyUniqueArrayValues).sort((a, b) => {
             return b - a
@@ -200,7 +204,7 @@ CommonAttributesSelectFilter = {
             if (no_prefix === true) {
                 return selector_prefix + '-attribute-select';
             } else {
-                return '#' + selector_prefix + '-attribute-select';
+                return '[id^="' + selector_prefix + '-attribute-select"]';
             }
         },
         forWrappers: function (selector_prefix, no_prefix = false) {
@@ -222,15 +226,15 @@ CommonAttributesSelectFilter = {
             CommonAttributesSelectFilter.select_2.reInitialize(new_food_attributes, 'food');
         },
 
-    },
-    rarity_attribute: {
+    }, //TODO: move it to separate file and bundle
+    rarity_attribute: { //TODO: move it to separate file and bundle
         init: function () {
             let selector_prefix = 'rarity';
             CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
             CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
         },
     },
-    select_2: {
+    select_2: { //TODO: think about doing separate file from it
         init: function () {
             let selector = CommonAttributesSelectFilter.build_selector;
             $(selector.forAttributesSelects('level')).select2();
@@ -251,6 +255,12 @@ CommonAttributesSelectFilter = {
                 $(item).parent().find(text_holder_class).html(selected_option.trim());
             });
 
+        },
+        reinitializeAllSelects: function () {
+            //TODO: add array of methods so this way I might be able to skip reinit from method from which I make call
+            //TODO: other option is removing reinit per Attribute and just make one big reinit for all
+            CommonAttributesSelectFilter.levels_attribute.reInitialize();
+            FoodAttributesSelectFilter.select_2.reInitialize();
         },
     },
 };

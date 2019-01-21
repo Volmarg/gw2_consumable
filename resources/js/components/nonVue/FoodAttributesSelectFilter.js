@@ -1,5 +1,5 @@
 FoodAttributesSelectFilter = {
-    foodAttributes: {
+    foodAttributes: { //change to camel_case
         allFoodItemsWrapper: new Vue({
             el: '#all-food-items-wrapper',
             data: {
@@ -35,19 +35,15 @@ FoodAttributesSelectFilter = {
             });
 
         },
-
         getRefs() {
             return this.allFoodItemsWrapper;
         },
-
         setVueSelects: function (vue_selects) {
             window.selects = vue_selects;
         },
-
         getVueSelects: function () {
             return window.selects;
         },
-
     },
 
     select_2: {
@@ -61,13 +57,13 @@ FoodAttributesSelectFilter = {
             selects.select2();
             that.reInitialize(); //BUG 1 - FIX: jq based reinit is working fine, shouldn't de done that way but that's fastest way
 
-            selects.on("change", function () {
+            selects.on("change", function () { //TODO Use OnChange from Common
                 let all_selects = $('.foodAttributesWrapper .select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
                 that.filterFoodItems(refs.$refs.oneFoodItem, all_selected_options);
                 that.reInitialize();
             });
-        },
+        }, //TODO move that part to fooAttribute
 
         reInitialize: function () {
             let new_food_attributes = FoodAttributesSelectFilter.foodAttributes.foodAttributesIntoArray();

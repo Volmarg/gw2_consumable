@@ -5,7 +5,7 @@
         <ul>
             @foreach($item_attributes as $one_attribute)
                 <li style="" data-consumable-item-attribute=" {{$one_attribute}}" data-ref="oneAttributeOfFood"
-                    data-attrs-available="true">
+                    data-attrs-available="true" class="food">
                     {{$one_attribute}}
                 </li>
             @endforeach
