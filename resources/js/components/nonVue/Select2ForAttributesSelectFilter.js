@@ -23,7 +23,8 @@ var select_2 = {
     reinitializeAllSelects: function () {
         //TODO: add array of methods so this way I might be able to skip reinit from method from which I make call
         //TODO: other option is removing reinit per Attribute and just make one big reinit for all
-        levels_attribute.reInitialize();
-        FoodAttributesSelectFilter.select_2.reInitialize();
+        //TODO: at this point it gets infinite loop
+        levels_attribute.reInitialize(false);
+        //FoodAttributesSelectFilter.select_2.reInitialize();
     },
 };

@@ -65,7 +65,6 @@ FoodAttributesSelectFilter = {
         },
     },
 };//TODO: this still should be refractored at one point
-//changed start
 var levels_attribute = {
     init: function () {
         let selector_prefix = 'level';
@@ -76,7 +75,6 @@ var levels_attribute = {
             CommonAttributesSelectFilter.reInitialize('level',false, can_reinit_all);
     },
 };
-//changed end
 var rarity_attribute = { //TODO: move it to separate file and bundle
     init: function () {
         let selector_prefix = 'rarity';
@@ -123,7 +121,6 @@ CommonAttributesSelectFilter = {
             },
         });
     },
-    //Changed start
     attachOptionsReinitializationOnChange: function (selector_prefix) {
         let that = this;
         let selects = $(that.build_selector.forAttributesSelects(selector_prefix));
@@ -149,7 +146,6 @@ CommonAttributesSelectFilter = {
             select_2.reinitializeAllSelects();
         }
     },
-    //Changed end
     removeValuesFromItemAttributes: function (item_attribute) {
         return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
     },
@@ -230,7 +226,6 @@ var select_2 = {
         $(selector.forAttributesSelects('level')).select2();
         $(selector.forAttributesSelects('rarity')).select2();
     },
-    //Changed start
     reInitialize: function (attributes, attribute_type) {
         let selects = $('[id^="' + CommonAttributesSelectFilter.build_selector.forAttributesSelects(attribute_type, true) + '"]');
         let text_holder_class = '.select2-selection__rendered';
@@ -254,7 +249,6 @@ var select_2 = {
         levels_attribute.reInitialize(false);
         //FoodAttributesSelectFilter.select_2.reInitialize();
     },
-    //Changed end
 };
 Ajax = {
     updateDatabase: function () {

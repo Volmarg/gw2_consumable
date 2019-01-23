@@ -4,8 +4,7 @@ var levels_attribute = {
         CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
         CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
     },
-    reInitialize: function () {
-        let new_food_attributes = FoodAttributesSelectFilter.food_attributes.foodAttributesIntoArray();
-        select_2.reInitialize(new_food_attributes, 'food');
+    reInitialize: function (can_reinit_all = true) {
+        CommonAttributesSelectFilter.reInitialize('level',false, can_reinit_all);
     },
 };

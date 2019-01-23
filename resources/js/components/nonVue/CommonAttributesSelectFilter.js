@@ -40,18 +40,26 @@ CommonAttributesSelectFilter = {
         let that = this;
         let selects = $(that.build_selector.forAttributesSelects(selector_prefix));
         selects.on("change", function () {
-            let attributes = that.getAttributesAsArray('.' + selector_prefix, false);
-            let all_selects = $(that.build_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
-
-            all_selects.each((index, item) => {
-                console.log($(item));
-                let all_selected_options = $(item).find('option:selected');
-                that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
-                select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
-            });
-
-            select_2.reinitializeAllSelects();
+            that.reInitialize(selector_prefix, that);
         });
+    },
+    reInitialize: function (selector_prefix, that = false,can_reinit_all=true) {
+        that = (that === false ? this : that);
+        let attributes = that.getAttributesAsArray('.' + selector_prefix, false);
+        let all_selects = $(that.build_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
+
+        all_selects.each((index, item) => {
+            console.log($(item));
+            let all_selected_options = $(item).find('option:selected');
+            that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
+            //BUG: when I select Exotic items and the the level is reinitilized this function causes all items to reapear
+            //BUG 2: like above. If i set lvl 40, then filter by Exotics, it changes visibility to 40 instead of refilling options
+            select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
+        });
+
+        if (can_reinit_all){
+            select_2.reinitializeAllSelects();
+        }
     },
     removeValuesFromItemAttributes: function (item_attribute) {
         return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
