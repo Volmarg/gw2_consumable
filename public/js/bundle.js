@@ -1,15 +1,14 @@
 FoodAttributesSelectFilter = {
-    food_attributes: { //change to camel_case
+    food_attributes: {
         allFoodItemsWrapper: new Vue({
             el: '#all-food-items-wrapper',
             data: {
                 vue_loop_repeats: 1
             }
         }),
-        foodAttributesIntoArray: function () { //TODO: refractor in Common if it's possible
+        foodAttributesIntoArray: function () {
             let array_of_attributes = [''];
             let all_dom_list_elements = $('li[data-ref^="oneAttributeOfFood"]');
-            let that = this;
 
             all_dom_list_elements.each(function (index, item) {
                 if ($(item).attr('data-attrs-available').toString() === "true") {
@@ -45,13 +44,9 @@ FoodAttributesSelectFilter = {
             return window.selects;
         },
     },
-
     select_2: {
-
         init: function () {
             let selects = $('[id^="food-attribute-select"]');
-            let food = FoodAttributesSelectFilter;
-            let refs = food.food_attributes.getRefs();
             let that = this;
 
             selects.select2();
@@ -63,29 +58,33 @@ FoodAttributesSelectFilter = {
                 CommonAttributesSelectFilter.filterItems(all_selected_options, 'food');
                 that.reInitialize();
             });
-        }, //TODO move that part to fooAttribute
-
+        },
         reInitialize: function () {
             let new_food_attributes = FoodAttributesSelectFilter.food_attributes.foodAttributesIntoArray();
-            CommonAttributesSelectFilter.select_2.reInitialize(new_food_attributes, 'food');
+            select_2.reInitialize(new_food_attributes, 'food');
         },
-
-        filterFoodItems: function filterFoodItems(food_items, selected_options_dom) {
-            let commons = CommonAttributesSelectFilter;
-
-            food_items.forEach(function (food_element) {
-                let jq_food_elem = $(food_element);
-                let list_elements = jq_food_elem.find('li');
-
-                list_elements.each(function () {
-                    let item_has_option = commons.ifItemContainsSelectedOption(selected_options_dom, jq_food_elem);
-                    commons.changeItemVisibility(jq_food_elem, item_has_option);
-                });
-            });
-        },
-
+    },
+};//TODO: this still should be refractored at one point
+//changed start
+var levels_attribute = {
+    init: function () {
+        let selector_prefix = 'level';
+        CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
+        CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
+    },
+    reInitialize: function (can_reinit_all = true) {
+            CommonAttributesSelectFilter.reInitialize('level',false, can_reinit_all);
     },
 };
+//changed end
+var rarity_attribute = { //TODO: move it to separate file and bundle
+    init: function () {
+        let selector_prefix = 'rarity';
+        CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
+        CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
+    },
+};
+
 CommonAttributesSelectFilter = {
     filterItems: function (selected_options_dom, selector_prefix = true) { //TODO: use it in foodFilter as well
         let items = $('.oneItem'); //as param?
@@ -124,23 +123,33 @@ CommonAttributesSelectFilter = {
             },
         });
     },
+    //Changed start
     attachOptionsReinitializationOnChange: function (selector_prefix) {
         let that = this;
         let selects = $(that.build_selector.forAttributesSelects(selector_prefix));
         selects.on("change", function () {
-            let attributes = that.getAttributesAsArray('.' + selector_prefix, false);
-            let all_selects = $(that.build_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
-
-            all_selects.each((index, item) => {
-                console.log($(item));
-                let all_selected_options = $(item).find('option:selected');
-                that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
-                that.select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
-            });
-
-            that.select_2.reinitializeAllSelects();
+            that.reInitialize(selector_prefix, that);
         });
     },
+    reInitialize: function (selector_prefix, that = false,can_reinit_all=true) {
+        that = (that === false ? this : that);
+        let attributes = that.getAttributesAsArray('.' + selector_prefix, false);
+        let all_selects = $(that.build_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
+
+        all_selects.each((index, item) => {
+            console.log($(item));
+            let all_selected_options = $(item).find('option:selected');
+                that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
+            //BUG: when I select Exotic items and the the level is reinitilized this function causes all items to reapear
+            //BUG 2: like above. If i set lvl 40, then filter by Exotics, it changes visibility to 40 instead of refilling options
+            select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
+        });
+
+        if (can_reinit_all){
+            select_2.reinitializeAllSelects();
+        }
+    },
+    //Changed end
     removeValuesFromItemAttributes: function (item_attribute) {
         return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
     },
@@ -183,7 +192,6 @@ CommonAttributesSelectFilter = {
                 item = $(item).find(additional_selector);
             }
 
-
             $(item).each((index, item) => {
                 if ($(item).attr('data-attrs-available').toString() === "true") {
                     let item_attribute = $(item).html();
@@ -204,7 +212,7 @@ CommonAttributesSelectFilter = {
             if (no_prefix === true) {
                 return selector_prefix + '-attribute-select';
             } else {
-                return '[id^="' + selector_prefix + '-attribute-select"]';
+                return '#' + selector_prefix + '-attribute-select';
             }
         },
         forWrappers: function (selector_prefix, no_prefix = false) {
@@ -215,54 +223,38 @@ CommonAttributesSelectFilter = {
             }
         },
     },
-    levels_attribute: {
-        init: function () {
-            let selector_prefix = 'level';
-            CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
-            CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
-        },
-        reInitialize: function () {
-            let new_food_attributes = FoodAttributesSelectFilter.food_attributes.foodAttributesIntoArray();
-            CommonAttributesSelectFilter.select_2.reInitialize(new_food_attributes, 'food');
-        },
-
-    }, //TODO: move it to separate file and bundle
-    rarity_attribute: { //TODO: move it to separate file and bundle
-        init: function () {
-            let selector_prefix = 'rarity';
-            CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
-            CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
-        },
+};
+var select_2 = {
+    init: function () {
+        let selector = CommonAttributesSelectFilter.build_selector;
+        $(selector.forAttributesSelects('level')).select2();
+        $(selector.forAttributesSelects('rarity')).select2();
     },
-    select_2: { //TODO: think about doing separate file from it
-        init: function () {
-            let selector = CommonAttributesSelectFilter.build_selector;
-            $(selector.forAttributesSelects('level')).select2();
-            $(selector.forAttributesSelects('rarity')).select2();
-        },
-        reInitialize: function (attributes, attribute_type) {
-            let selects = $('[id^="' + CommonAttributesSelectFilter.build_selector.forAttributesSelects(attribute_type, true) + '"]');
-            let text_holder_class = '.select2-selection__rendered';
+    //Changed start
+    reInitialize: function (attributes, attribute_type) {
+        let selects = $('[id^="' + CommonAttributesSelectFilter.build_selector.forAttributesSelects(attribute_type, true) + '"]');
+        let text_holder_class = '.select2-selection__rendered';
 
-            selects.each(function (index, item) {
-                let selected_option = '';
-                if ($(item).val() !== '' && $(item).val() !== null) {
-                    selected_option = $(item).val();
-                }
-                $(item).html('').select2({data: [{id: '', text: ''}]});
-                $(item).html('').select2({data: attributes});
-                $(item).val(selected_option);
-                $(item).parent().find(text_holder_class).html(selected_option.trim());
-            });
+        selects.each(function (index, item) {
+            let selected_option = '';
+            if ($(item).val() !== '' && $(item).val() !== null) {
+                selected_option = $(item).val();
+            }
+            $(item).html('').select2({data: [{id: '', text: ''}]});
+            $(item).html('').select2({data: attributes});
+            $(item).val(selected_option);
+            $(item).parent().find(text_holder_class).html(selected_option.trim());
+        });
 
-        },
-        reinitializeAllSelects: function () {
-            //TODO: add array of methods so this way I might be able to skip reinit from method from which I make call
-            //TODO: other option is removing reinit per Attribute and just make one big reinit for all
-            CommonAttributesSelectFilter.levels_attribute.reInitialize();
-            FoodAttributesSelectFilter.select_2.reInitialize();
-        },
     },
+    reinitializeAllSelects: function () {
+        //TODO: add array of methods so this way I might be able to skip reinit from method from which I make call
+        //TODO: other option is removing reinit per Attribute and just make one big reinit for all
+        //TODO: at this point it gets infinite loop
+        levels_attribute.reInitialize(false);
+        //FoodAttributesSelectFilter.select_2.reInitialize();
+    },
+    //Changed end
 };
 Ajax = {
     updateDatabase: function () {
@@ -287,9 +279,9 @@ Init = {
     },
 
     commonAttributesSelect: function () {
-        CommonAttributesSelectFilter.levels_attribute.init();
-        CommonAttributesSelectFilter.rarity_attribute.init();
-        CommonAttributesSelectFilter.select_2.init(); //BUG: requires reinit function to be rewritten for this new selects
+        levels_attribute.init();
+        rarity_attribute.init();
+        select_2.init(); //BUG: requires reinit function to be rewritten for this new selects
     },
 
 

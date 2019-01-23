@@ -45,7 +45,6 @@ FoodAttributesSelectFilter = {
         },
     },
     select_2: {
-
         init: function () {
             let selects = $('[id^="food-attribute-select"]');
             let that = this;
@@ -56,13 +55,13 @@ FoodAttributesSelectFilter = {
             selects.on("change", function () { //TODO Use OnChange from Common
                 let all_selects = $('.foodAttributesWrapper .select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
-                CommonAttributesSelectFilter.filterItems(all_selected_options, '.food');
+                CommonAttributesSelectFilter.filterItems(all_selected_options, 'food');
                 that.reInitialize();
             });
         },
         reInitialize: function () {
             let new_food_attributes = FoodAttributesSelectFilter.food_attributes.foodAttributesIntoArray();
-            CommonAttributesSelectFilter.select_2.reInitialize(new_food_attributes, 'food');
+            select_2.reInitialize(new_food_attributes, 'food');
         },
     },
-};
+};//TODO: this still should be refractored at one point
