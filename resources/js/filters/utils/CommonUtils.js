@@ -40,7 +40,7 @@ var common_utils = {
     },
     manage_selects: {
         fillWithAttributes: function (item_type, selector_prefix) {
-            let all_attribute_values = this.get_attributes.getValues(item_type, '.' + selector_prefix);
+            let all_attribute_values = common_utils.get_attributes.getValues(item_type, '.' + selector_prefix);
             let selector = attribute_selectors.generate_selector.forAttributesSelects(selector_prefix);
             new Vue({
                 el: selector,
@@ -53,7 +53,7 @@ var common_utils = {
             let that = this;
             let selects = $(attribute_selectors.generate_selector.forAttributesSelects(selector_prefix));
             selects.on("change", function () {
-                that.manage_selects.reinitialize(selector_prefix, that);
+                common_utils.manage_selects.reinitialize(selector_prefix, that);
             });
         },
         reinitialize: function (selector_prefix, that = false, can_reinit_all = true) {
@@ -63,7 +63,7 @@ var common_utils = {
 
             all_selects.each((index, item) => {
                 let all_selected_options = $(item).find('option:selected');
-                that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
+                items_visibility.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
                 //BUG: Works almost fine, but now If I select Damage vs undead, then exotic and back rare - values (innerHtml) is cleared
                 select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
             });

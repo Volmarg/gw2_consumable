@@ -55,7 +55,7 @@ FoodAttributesSelectFilter = {
             selects.on("change", function () { //TODO Use OnChange from Common
                 let all_selects = $('.foodAttributesWrapper .select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
-                CommonAttributesSelectFilter.filterItems(all_selected_options, 'food');
+                items_visibility.filterItems(all_selected_options, 'food');
                 that.reInitialize();
             });
         },

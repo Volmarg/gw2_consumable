@@ -12,7 +12,7 @@ FoodAttributesSelectFilter = {
 
             all_dom_list_elements.each(function (index, item) {
                 if ($(item).attr('data-attrs-available').toString() === "true") {
-                    let item_attribute = CommonAttributesSelectFilter.removeValuesFromItemAttributes($(item).html());
+                    let item_attribute = common_utils.change_item_attributes.remove_values($(item).html());
                     array_of_attributes.push(item_attribute.trim());
                 }
             });
@@ -55,7 +55,7 @@ FoodAttributesSelectFilter = {
             selects.on("change", function () { //TODO Use OnChange from Common
                 let all_selects = $('.foodAttributesWrapper .select2-hidden-accessible');
                 let all_selected_options = all_selects.find('option:selected');
-                CommonAttributesSelectFilter.filterItems(all_selected_options, 'food');
+                items_visibility.filterItems(all_selected_options, 'food');
                 that.reInitialize();
             });
         },
@@ -68,129 +68,40 @@ FoodAttributesSelectFilter = {
 var levels_attribute = {
     init: function () {
         let selector_prefix = 'level';
-        CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
-        CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
+        common_utils.manage_selects.fillWithAttributes('food', selector_prefix);
+        common_utils.manage_selects.reinitializeOnChange(selector_prefix);
     },
 };
-var rarity_attribute = { //TODO: move it to separate file and bundle
+var rarity_attribute = {
     init: function () {
         let selector_prefix = 'rarity';
-        CommonAttributesSelectFilter.fillSelectOptionsWithAttributes('food', selector_prefix);
-        CommonAttributesSelectFilter.attachOptionsReinitializationOnChange(selector_prefix);
+        common_utils.manage_selects.fillWithAttributes('food', selector_prefix);
+        common_utils.manage_selects.reinitializeOnChange(selector_prefix);
     },
 };
 
-CommonAttributesSelectFilter = {
-    getAttributeValues: function (item_type, searched_attribute_selector) { //BUG: getAttributesAsArray - duplicate
-        let all_items_of_type = $('#all-' + item_type + '-items-wrapper');
-        let all_levels = $(all_items_of_type).find(searched_attribute_selector);
-        let array_of_attribute_values = [''];
-
-        $(all_levels).each((index, item) => {
-            array_of_attribute_values.push($(item).text());
-        });
-
-        return array_of_attribute_values.filter(Utils.onlyUniqueArrayValues).sort((a, b) => {
-            return b - a
-        });
-    },
-    getAttributesAsArray: function (additional_selector = false, clear_values = false) {
-        let array_of_attributes = [''];
-        let all_dom_list_elements = $(this.selectors.item); //this selector should by added as param?
-        let that=this;
-
-        all_dom_list_elements.each(function (index, item) {
-            let item_=item; // original oneItem
-            item = (additional_selector !== false ? $(item).find(additional_selector) : item); //attribute wrapper
-
-            $(item).each((index, item) => {
-                if ($(item).attr('data-attrs-available').toString() === "true" && that.isItemHiddenByFilter(item_)) {
-                    let item_attribute = $(item).html();
-                    if (clear_values) {
-                        item_attribute = CommonAttributesSelectFilter.removeValuesFromItemAttributes(item_attribute);
-                    }
-                    array_of_attributes.push(item_attribute.trim());
-                }
-            });
-        });
-        return array_of_attributes.filter(Utils.onlyUniqueArrayValues).sort((a, b) => {
-            return b - a
-        });
-    },
-    fillSelectOptionsWithAttributes: function (item_type, selector_prefix) {
-        let all_attribute_values = CommonAttributesSelectFilter.getAttributeValues(item_type, '.' + selector_prefix);
-        let selector = CommonAttributesSelectFilter.build_selector.forAttributesSelects(selector_prefix);
-        new Vue({
-            el: selector,
-            data: {
-                allAttributeValues: all_attribute_values,
-            },
-        });
-    },
-    attachOptionsReinitializationOnChange: function (selector_prefix) {
-        let that = this;
-        let selects = $(that.build_selector.forAttributesSelects(selector_prefix));
-        selects.on("change", function () {
-            that.reInitialize(selector_prefix, that);
-        });
-    },
-    reInitialize: function (selector_prefix, that = false, can_reinit_all = true) {
-        that = (that === false ? this : that);
-        let attributes = that.getAttributesAsArray('.' + selector_prefix, false);
-        let all_selects = $(that.build_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
-
-        all_selects.each((index, item) => {
-            console.log($(item));
-            let all_selected_options = $(item).find('option:selected');
-            that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
-            //BUG: Works almost fine, but now If I select Damage vs undead, then exotic and back rare - values (innerHtml) is cleared
-            select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
-        });
-
-        //FoodAttributesSelectFilter.select_2.reInitialize();
-    },
-    removeValuesFromItemAttributes: function (item_attribute) {
-        return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
-    },
-    //filtering
-    filterItems: function (selected_options_dom, selector_prefix = true) { //TODO: use it in foodFilter as well
-        let that=this;
-        let items = $(that.selectors.item);
-        let commons = CommonAttributesSelectFilter;
-
-        $(items).each(function (index, elements) {
-            if (selector_prefix) {
-                elements = $(elements).find('.' + selector_prefix);
+var attribute_selectors = {
+    generate_selector: {
+        forAttributesSelects: function (selector_prefix, no_prefix = false) {
+            if (no_prefix === true) {
+                return selector_prefix + '-attribute-select';
+            } else {
+                return '#' + selector_prefix + '-attribute-select';
             }
-            elements.each(function () {
-                let item_has_option = commons.doesItemContainsSelectedOption(selected_options_dom, $(elements), false);
-
-                let item = $(elements);
-                if (!item.hasClass('oneItem')) {
-                    item = item.closest(that.selectors.item);
-                }
-
-                let hidden_by = commons.changeStatusHiddenByFilter(item, selector_prefix, item_has_option);
-                commons.changeItemVisibility(item, hidden_by);
-            });
-        });
-    },
-    doesItemContainsSelectedOption: function (selected_option, element, escape_numbers = true) { //TODO: refractor with common if possible
-        let status = true;
-
-        selected_option.each(function (index, selected_option_dom) {
-            let pattern2 = (escape_numbers ? /([+-])?([0-9])*([%])?/g : /([+-])?([%])?/g);
-            let selected_option_string = Utils.escapeRegExp($(selected_option_dom).text().trim());
-            let reg = new RegExp(selected_option_string, "i");
-
-            if (!reg.exec($(element).text().trim().replace(pattern2, ''))) {
-                status = false;
-                return false;
+        },
+        forWrappers: function (selector_prefix, no_prefix = false) {
+            if (no_prefix === true) {
+                return selector_prefix + 'AttributesWrapper';
+            } else {
+                return '.' + selector_prefix + 'AttributesWrapper';
             }
-        });
-
-        return status;
+        },
     },
+    selectors: {
+        item: '.oneItem',
+    },
+};
+var items_visibility = {
     changeItemVisibility: function (item, hidden_by) {
         if (hidden_by.length !== 0) {
             item.css({display: 'none'});
@@ -200,7 +111,6 @@ CommonAttributesSelectFilter = {
             item.find('li').attr('data-attrs-available', 'true');
         }
     },
-    //hidden by filter section
     changeStatusHiddenByFilter: function (item, selector_prefix, has_selected_option) {
         let attr = 'data-hidden-by-filter-types';
         let hidden_by = JSON.parse($(item).attr(attr));
@@ -221,35 +131,116 @@ CommonAttributesSelectFilter = {
     isItemHiddenByFilter: function (item) {
         return JSON.parse($(item).attr('data-hidden-by-filter-types')).length !== 0;
     },
+    filterItems: function (selected_options, selector_prefix = true) { //TODO: use it in foodFilter as well
+        let items = $(attribute_selectors.selectors.item);
+        $(items).each(function (index, elements) {
 
-    build_selector: {
-        forAttributesSelects: function (selector_prefix, no_prefix = false) {
-            if (no_prefix === true) {
-                return selector_prefix + '-attribute-select';
-            } else {
-                return '#' + selector_prefix + '-attribute-select';
+            elements = (selector_prefix ? $(elements).find('.' + selector_prefix) : elements);
+            elements.each(function () {
+                let item_has_option = items_visibility.doesItemContainsSelectedOption(selected_options, $(elements), false);
+                let item = (!$(elements).hasClass('oneItem') ? $(elements).closest(attribute_selectors.selectors.item) : $(elements));
+                let hidden_by = items_visibility.changeStatusHiddenByFilter(item, selector_prefix, item_has_option);
+
+                items_visibility.changeItemVisibility(item, hidden_by);
+            });
+        });
+    },
+    doesItemContainsSelectedOption: function (selected_options, element, escape_numbers = true) { //TODO: refractor with common if possible
+        let status='';
+        selected_options.each(function (index, selected_option) {
+            let pattern = (escape_numbers ? /([+-])?([0-9])*([%])?/g : /([+-])?([%])?/g);
+            let selected_option_string = Utils.escapeRegExp($(selected_option).text().trim());
+            let reg = new RegExp(selected_option_string, "i");
+
+            status = (!reg.exec($(element).text().trim().replace(pattern, '')) ? false : true);
+            if (!status) {
+                return false;
             }
+        });
+        return status;
+    },
+};
+var common_utils = {
+    get_attributes: {
+        getValues: function (item_type, searched_attribute_selector) { //BUG: getAttributesAsArray - duplicate
+            let all_items_of_type = $('#all-' + item_type + '-items-wrapper');
+            let all_levels = $(all_items_of_type).find(searched_attribute_selector);
+            let array_of_attribute_values = [''];
+
+            $(all_levels).each((index, item) => {
+                array_of_attribute_values.push($(item).text());
+            });
+
+            return array_of_attribute_values.filter(Utils.onlyUniqueArrayValues).sort((a, b) => {
+                return b - a
+            });
         },
-        forWrappers: function (selector_prefix, no_prefix = false) {
-            if (no_prefix === true) {
-                return selector_prefix + 'AttributesWrapper';
-            } else {
-                return '.' + selector_prefix + 'AttributesWrapper';
-            }
+        getAsArray: function (additional_selector = false, clear_values = false) {
+            let array_of_attributes = [''];
+            let all_dom_list_elements = $(attribute_selectors.selectors.item); //this selector should by added as param?
+
+            all_dom_list_elements.each(function (index, item) {
+                let item_ = item; // original oneItem
+                item = (additional_selector !== false ? $(item).find(additional_selector) : item); //attribute wrapper
+
+                $(item).each((index, item) => {
+                    if ($(item).attr('data-attrs-available').toString() === "true" && items_visibility.isItemHiddenByFilter(item_)) {
+                        let item_attribute = (clear_values ? common_utils.change_item_attributes.remove_values($(item).html()) : $(item).html());
+                        array_of_attributes.push(item_attribute.trim());
+                    }
+                });
+            });
+            return array_of_attributes.filter(Utils.onlyUniqueArrayValues).sort((a, b) => {
+                return b - a
+            });
         },
     },
-    selectors: {
-        item: '.oneItem',
+    change_item_attributes: {
+        remove_values: function (item_attribute) {
+            return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
+        },
     },
+    manage_selects: {
+        fillWithAttributes: function (item_type, selector_prefix) {
+            let all_attribute_values = common_utils.get_attributes.getValues(item_type, '.' + selector_prefix);
+            let selector = attribute_selectors.generate_selector.forAttributesSelects(selector_prefix);
+            new Vue({
+                el: selector,
+                data: {
+                    allAttributeValues: all_attribute_values,
+                },
+            });
+        },
+        reinitializeOnChange: function (selector_prefix) {
+            let that = this;
+            let selects = $(attribute_selectors.generate_selector.forAttributesSelects(selector_prefix));
+            selects.on("change", function () {
+                common_utils.manage_selects.reinitialize(selector_prefix, that);
+            });
+        },
+        reinitialize: function (selector_prefix, that = false, can_reinit_all = true) {
+            that = (that === false ? this : that);
+            let attributes = common_utils.get_attributes.getAsArray('.' + selector_prefix, false);
+            let all_selects = $(attribute_selectors.generate_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
+
+            all_selects.each((index, item) => {
+                let all_selected_options = $(item).find('option:selected');
+                items_visibility.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
+                //BUG: Works almost fine, but now If I select Damage vs undead, then exotic and back rare - values (innerHtml) is cleared
+                select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
+            });
+        },
+    },
+
+
 };
 var select_2 = {
     init: function () {
-        let selector = CommonAttributesSelectFilter.build_selector;
-        $(selector.forAttributesSelects('level')).select2();
-        $(selector.forAttributesSelects('rarity')).select2();
+        $(attribute_selectors.generate_selector.forAttributesSelects('level')).select2();
+        $(attribute_selectors.generate_selector.forAttributesSelects('rarity')).select2();
     },
     reInitialize: function (attributes, attribute_type) {
-        let selects = $('[id^="' + CommonAttributesSelectFilter.build_selector.forAttributesSelects(attribute_type, true) + '"]');
+        let selects = $('[id^="' + attribute_selectors.generate_selector.forAttributesSelects(attribute_type, true) + '"]');
         let text_holder_class = '.select2-selection__rendered';
 
         selects.each(function (index, item) {

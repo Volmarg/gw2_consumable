@@ -43,12 +43,13 @@ var items_visibility = {
         });
     },
     doesItemContainsSelectedOption: function (selected_options, element, escape_numbers = true) { //TODO: refractor with common if possible
+        let status='';
         selected_options.each(function (index, selected_option) {
             let pattern = (escape_numbers ? /([+-])?([0-9])*([%])?/g : /([+-])?([%])?/g);
             let selected_option_string = Utils.escapeRegExp($(selected_option).text().trim());
             let reg = new RegExp(selected_option_string, "i");
 
-            let status = (!reg.exec($(element).text().trim().replace(pattern, '')) ? false : true);
+            status = (!reg.exec($(element).text().trim().replace(pattern, '')) ? false : true);
             if (!status) {
                 return false;
             }
