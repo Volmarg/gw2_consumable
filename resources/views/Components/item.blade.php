@@ -1,4 +1,4 @@
-<section class="oneItem" ref="oneFoodItem">
+<section class="oneItem" ref="oneFoodItem" data-hidden-by-filter-types="[]">
     <p class="itemName"><b>{{$name}}</b></p>
     <section class="detailsWrapper">
         <img src="{{$icon}}"/>
