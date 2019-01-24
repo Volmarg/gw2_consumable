@@ -16,11 +16,13 @@ mix.js('resources/js/app.js', 'public/js')
 
 mix.scripts(
     [
-        'resources/js/components/nonVue/FoodAttributesSelectFilter.js',
-        'resources/js/components/nonVue/LevelAttributesSelectFilter.js',
-        'resources/js/components/nonVue/RarityAttributesSelectFilter.js',
-        'resources/js/components/nonVue/CommonAttributesSelectFilter.js',
-        'resources/js/components/nonVue/Select2ForAttributesSelectFilter.js',
+        'resources/js/filters/selects/FoodAttributes.js',
+        'resources/js/filters/selects/LevelAttributes.js',
+        'resources/js/filters/selects/RarityAttributes.js',
+        'resources/js/filters/selects/AttributesSelectors.js',
+        'resources/js/filters/utils/ItemsVisibility.js',
+        'resources/js/filters/utils/CommonUtils.js',
+        'resources/js/filters/Select2ForAttributesSelect.js',
         'resources/js/ajax.js',
         'resources/js/Init.js',
     ],

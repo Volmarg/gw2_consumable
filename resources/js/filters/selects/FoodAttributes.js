@@ -12,7 +12,7 @@ FoodAttributesSelectFilter = {
 
             all_dom_list_elements.each(function (index, item) {
                 if ($(item).attr('data-attrs-available').toString() === "true") {
-                    let item_attribute = CommonAttributesSelectFilter.removeValuesFromItemAttributes($(item).html());
+                    let item_attribute = common_utils.change_item_attributes.remove_values($(item).html());
                     array_of_attributes.push(item_attribute.trim());
                 }
             });
