@@ -96,7 +96,7 @@ CommonAttributesSelectFilter = {
     },
     getAttributesAsArray: function (additional_selector = false, clear_values = false) {
         let array_of_attributes = [''];
-        let all_dom_list_elements = $('.oneItem'); //this selector should by added as param?
+        let all_dom_list_elements = $(this.selectors.item); //this selector should by added as param?
         let that=this;
 
         all_dom_list_elements.each(function (index, item) {
@@ -106,7 +106,7 @@ CommonAttributesSelectFilter = {
             $(item).each((index, item) => {
                 if ($(item).attr('data-attrs-available').toString() === "true" && that.isItemHiddenByFilter(item_)) {
                     let item_attribute = $(item).html();
-                    if (clear_values === true) {
+                    if (clear_values) {
                         item_attribute = CommonAttributesSelectFilter.removeValuesFromItemAttributes(item_attribute);
                     }
                     array_of_attributes.push(item_attribute.trim());
@@ -143,18 +143,19 @@ CommonAttributesSelectFilter = {
             console.log($(item));
             let all_selected_options = $(item).find('option:selected');
             that.filterItems(all_selected_options, selector_prefix); // TODO: rewrite filteringItems for Common use
-            //BUG: when I select Exotic items and the the level is reinitilized this function causes all items to reapear
-            //BUG 2: like above. If i set lvl 40, then filter by Exotics, it changes visibility to 40 instead of refilling options
+            //BUG: Works almost fine, but now If I select Damage vs undead, then exotic and back rare - values (innerHtml) is cleared
             select_2.reInitialize(attributes, selector_prefix); //TODO: test reinit function
         });
 
+        //FoodAttributesSelectFilter.select_2.reInitialize();
     },
     removeValuesFromItemAttributes: function (item_attribute) {
         return item_attribute.replace(/([+-])?([0-9])*([%])?/g, '');
     },
     //filtering
     filterItems: function (selected_options_dom, selector_prefix = true) { //TODO: use it in foodFilter as well
-        let items = $('.oneItem');
+        let that=this;
+        let items = $(that.selectors.item);
         let commons = CommonAttributesSelectFilter;
 
         $(items).each(function (index, elements) {
@@ -166,7 +167,7 @@ CommonAttributesSelectFilter = {
 
                 let item = $(elements);
                 if (!item.hasClass('oneItem')) {
-                    item = item.closest('.oneItem');
+                    item = item.closest(that.selectors.item);
                 }
 
                 let hidden_by = commons.changeStatusHiddenByFilter(item, selector_prefix, item_has_option);
@@ -263,7 +264,7 @@ var select_2 = {
         });
 
     },
-}; 
+};
 Ajax = {
     updateDatabase: function () {
         let spinning_rings = $('#updateDatabase+.lds-dual-ring');
