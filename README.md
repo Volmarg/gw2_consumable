@@ -5,7 +5,7 @@
 <img src="https://forum-en.gw2archive.eu/en/uploads/forum_attachment/file/165149/omnomberrybars.png" />
 
 <h2>Result</h2>
-<img src="https://github.com/Volmarg/gw2_consumable/blob/master/use-case.gif?raw=true" />
+<img src="https://github.com/Volmarg/gw2_consumable/blob/master/use-case2.gif?raw=true" />
 
 <h2>Informations</h2>
 <ul>
