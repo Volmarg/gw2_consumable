@@ -17,6 +17,7 @@
 
     <link href="{{asset('css/components.css')}}" rel="stylesheet"/>
     <link href="{{asset('css/global.css')}}" rel="stylesheet"/>
+
 </head>
 <body>
 

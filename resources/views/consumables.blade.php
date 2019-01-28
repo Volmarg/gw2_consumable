@@ -21,6 +21,8 @@
 
     <section id="all-food-items-wrapper">
 
+        @include('Components/itemHeader')
+
         <section v-for="item in vue_loop_repeats" id="items-wrapper">
             @foreach($all_items as $one_item)
                 @if(property_exists($one_item['item_data']->details,'description'))

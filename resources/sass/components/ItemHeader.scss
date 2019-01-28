@@ -1,0 +1,17 @@
+.headers-section {
+  margin: 10px;
+  * {
+    color: #7aa882 !important;
+    padding: 3px !important;
+    font-size: 20px !important;
+  }
+  div {
+    margin: 5px;
+  }
+}
+
+.items-header .headers-section {
+  width: auto;
+  height: auto;
+  display: flex;
+}

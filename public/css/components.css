@@ -9,16 +9,15 @@
 }
 
 #all-food-items-wrapper > section {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    display: block !important;
 }
 
 .oneItem {
-    background-color: #2a2b3c;
-    width: 590px;
-    height: 185px;
+    background-color: #191919;
     margin: 10px;
+    width: auto;
+    height: auto;
+    display: flex;
 }
 
 .oneItem * {
@@ -36,43 +35,54 @@
     max-width: 65px;
 }
 
-.oneItem .itemName {
+.oneItem img {
+    border: 1px solid #8a8d90;
+    align-self: center;
+    max-width: 65px;
+}
+
+.itemName {
     text-align: center;
     font-size: 19px;
     letter-spacing: 1.2px;
     color: #3f7eec;
+    width: 250px;
 }
 
 .oneItem .hr {
     border-top: 1px rgba(255, 255, 255, 0.2) solid;
 }
 
-.oneItem   .itemData {
-    padding:10px;
+.itemData {
+    padding: 10px;
 
-    color: white;
     font-size: 17px;
     color: #7aa882;
     font-weight: 100;
+
+    margin-left: auto !important;
+    width: 200px;
+    display: flex;
+    justify-content: space-around;
 }
 
-.oneItem .rarityRare{
+.oneItem .rarityRare {
     color: #ffd73a;
 }
 
-.oneItem .rarityBasic{
+.oneItem .rarityBasic {
     color: #e8e2ff;
 }
 
-.oneItem .rarityFine{
+.oneItem .rarityFine {
     color: #2544ff;
 }
 
-.oneItem .rarityExotic{
+.oneItem .rarityExotic {
     color: #ff640d;
 }
 
-.oneItem .rarityMasterwork{
+.oneItem .rarityMasterwork {
     color: #068900;
 }
 
@@ -99,6 +109,32 @@
     border: 5px solid #3f7eec;
     border-color: #3f7eec transparent #3f7eec transparent;
     animation: lds-dual-ring 1.2s linear infinite;
+}
+
+.oneItem .itemName, .oneItem .detailsWrapper, .oneItem .itemData {
+    align-self: center;
+    margin: 5px;
+}
+
+#all-food-items-wrapper > section {
+    display: block !important;
+
+}
+
+.items-header .headers-section {
+    width: auto;
+    height: auto;
+    display: flex;
+}
+
+.headers-section * {
+    color: #7aa882 !important;
+    padding: 3px !important;
+    font-size: 20px !important;
+}
+
+.headers-section div {
+    margin: 5px;
 }
 
 @keyframes lds-dual-ring {
