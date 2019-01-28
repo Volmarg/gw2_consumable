@@ -1,0 +1,172 @@
+.foodAttributesWrapper #food-attribute-filters {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.menu-elements-wrapper {
+  margin: 0 auto;
+  margin-top: 5px;
+}
+
+#all-food-items-wrapper > section {
+  display: block !important;
+}
+
+.oneItem {
+  background-color: #191919;
+  margin: 10px;
+  width: auto;
+  height: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.oneItem * {
+  font-family: 'Indie Flower', cursive;
+}
+
+.oneItem .detailsWrapper {
+  margin-left: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.oneItem img {
+  border: 1px solid #8a8d90;
+  -ms-flex-item-align: center;
+      align-self: center;
+  max-width: 65px;
+}
+
+.oneItem .itemName {
+  text-align: center;
+  font-size: 19px;
+  letter-spacing: 1.2px;
+  color: #3f7eec;
+  width: 250px;
+}
+
+.oneItem .itemName,
+.oneItem .detailsWrapper,
+.oneItem .itemData {
+  -ms-flex-item-align: center;
+      align-self: center;
+  margin: 5px;
+}
+
+.oneItem li {
+  font-size: 19px;
+  color: #7aa882;
+}
+
+.oneItem .hr {
+  border-top: 1px rgba(255, 255, 255, 0.2) solid;
+}
+
+.oneItem .itemData {
+  padding: 10px;
+  font-size: 17px;
+  color: #7aa882;
+  font-weight: 100;
+  margin-left: auto !important;
+  width: 200px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.oneItem .rarityRare {
+  color: #ffd73a;
+}
+
+.oneItem .rarityBasic {
+  color: #e8e2ff;
+}
+
+.oneItem .rarityFine {
+  color: #2544ff;
+}
+
+.oneItem .rarityExotic {
+  color: #ff640d;
+}
+
+.oneItem .rarityMasterwork {
+  color: #068900;
+}
+
+.headers-section {
+  margin: 10px;
+}
+
+.headers-section * {
+  color: #7aa882 !important;
+  padding: 3px !important;
+  font-size: 20px !important;
+}
+
+.headers-section div {
+  margin: 5px;
+}
+
+.items-header .headers-section {
+  width: auto;
+  height: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  position: absolute;
+  left: 48%;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 46px;
+  height: 46px;
+  margin: 1px;
+  border-radius: 47%;
+  border: 5px solid #3f7eec;
+  border-color: #3f7eec transparent #3f7eec transparent;
+  -webkit-animation: lds-dual-ring 1.2s linear infinite;
+          animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@-webkit-keyframes lds-dual-ring {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+

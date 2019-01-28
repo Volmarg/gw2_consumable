@@ -35,3 +35,6 @@ mix.scripts(
     ],
     'public/js/utils.js'
 );
+
+mix.sass('resources/sass/components.scss'
+    , 'public/components.css');
