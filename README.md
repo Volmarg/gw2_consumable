@@ -12,10 +12,15 @@
 <li> In case You run to problems like empty database, go manually to <pre>/fix</pre> page and pick up required options.
 </ul>
 
+<h2>Partially working</h2>
+<ul>
+<li> Filtering by lvl</li>
+<li> Filtering by rarity</li>
+</ul>
+
 <h2>Plans</h2>
 <ul>
 <li> More details displayed in boxes</li>
-<li> Filtering by lvl</li>
 <li> Runes/Sigils filtering by attributes </li>
 <li> Additional menu for swapping bettwen consumables/upgrades </li>
 </ul>
