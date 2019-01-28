@@ -4,7 +4,7 @@ var items_visibility = {
             item.css({display: 'none'});
             item.find('li').attr('data-attrs-available', 'false');
         } else {
-            item.css({display: 'block'});
+            item.css({display: 'flex'});
             item.find('li').attr('data-attrs-available', 'true');
         }
     },
