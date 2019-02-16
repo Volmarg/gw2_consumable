@@ -56,6 +56,24 @@ var common_utils = {
                 //FoodAttributesSelectFilter.select_2.reInitialize();
             });
         },
+        clearSelection: function (selector_prefix) {
+            let all_selects = $(attribute_selectors.generate_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
+            let that=this;
+            all_selects.each((index, item) => {
+                let all_selected_options = $(item).find('option');
+                $(all_selected_options).attr('selected', false);
+
+                let empty_element = $(all_selected_options).filter(function () {
+                    return $(this).text().trim() === '';
+                });
+
+                $(empty_element).attr('selected', 'selected');
+                that.reinitialize(selector_prefix,false,false);
+
+                let select2=$(attribute_selectors.generate_selector.forWrappers(selector_prefix)).find('.select2-selection__rendered');
+                select2.html('');
+            });
+        }
     },
 
 
