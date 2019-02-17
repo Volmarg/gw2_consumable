@@ -57,8 +57,9 @@ var common_utils = {
             });
         },
         clearSelection: function (button) {
-            let select=$(button).closest('section').find('select');
-            $(button).click(function () { $(select).select2("val", false); });
+            let select = $(button).closest('section').find('select');
+            $(select).select2("val", false);
+            $(select).trigger("change");
         }
     },
 
