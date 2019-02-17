@@ -219,23 +219,9 @@ var common_utils = {
             });
         },
         // move this fumction to CommonUtils.js
-        clearSelection: function (selector_prefix) {
-            let all_selects = $(attribute_selectors.generate_selector.forWrappers(selector_prefix) + ' .select2-hidden-accessible');
-            let that=this;
-            all_selects.each((index, item) => {
-                let all_selected_options = $(item).find('option');
-                $(all_selected_options).attr('selected', false);
-
-                let empty_element = $(all_selected_options).filter(function () {
-                    return $(this).text().trim() === '';
-                });
-
-                $(empty_element).attr('selected', 'selected');
-                that.reinitialize(selector_prefix,false,false);
-
-                let select2_selection=$(attribute_selectors.generate_selector.forWrappers(selector_prefix)).find('.select2-selection__rendered');
-                select2_selection.html('');
-            });
+        clearSelection: function (button) {
+            let select=$(button).closest('section').find('select');
+            $(button).click(function () { $(select).select2("val", false); });
         }
     },
 };
@@ -297,9 +283,9 @@ Init = {
 
         $('.clear-filter').on('click', (event) => {
             let element = event.target;
-            let selector_prefix = $(element).closest('section').attr('data-prefix');
+            //  let selector_prefix = $(element).closest('section').attr('data-prefix');
 
-            common_utils.manage_selects.clearSelection(selector_prefix);
+            common_utils.manage_selects.clearSelection(element);
         });
     }
 };

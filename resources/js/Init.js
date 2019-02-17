@@ -18,9 +18,7 @@ Init = {
 
         $('.clear-filter').on('click',(event)=>{
             let element=event.target;
-            let selector_prefix=$(element).closest('section').attr('data-prefix');
-
-            common_utils.manage_selects.clearSelection(selector_prefix);
+            common_utils.manage_selects.clearSelection(element);
         });
     }
 };
