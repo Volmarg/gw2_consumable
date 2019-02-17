@@ -137,7 +137,7 @@ var items_visibility = {
 
             elements = (selector_prefix ? $(elements).find('.' + selector_prefix) : elements);
             elements.each(function () {
-                let item_has_option = items_visibility.doesItemContainsSelectedOption(selected_options, $(elements), false);
+                let item_has_option = items_visibility.doesItemContainsSelectedOption(selected_options, $(elements));
                 let item = (!$(elements).hasClass('oneItem') ? $(elements).closest(attribute_selectors.selectors.item) : $(elements));
                 let hidden_by = items_visibility.changeStatusHiddenByFilter(item, selector_prefix, item_has_option);
 
