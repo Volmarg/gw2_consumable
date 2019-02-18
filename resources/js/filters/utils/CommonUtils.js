@@ -29,11 +29,15 @@ var common_utils = {
         fillWithAttributes: function (selector_prefix) {
             let all_attribute_values = common_utils.get_attributes.getAsArray('.' + selector_prefix);
             let selector = attribute_selectors.generate_selector.forAttributesSelects(selector_prefix);
-            new Vue({
-                el: selector,
-                data: {
-                    allAttributeValues: all_attribute_values,
-                },
+            let all_selects = $(selector);
+
+            all_selects.each((index, item) => {
+                new Vue({
+                    el: item,
+                    data: {
+                        allAttributeValues: all_attribute_values,
+                    },
+                });
             });
         },
         reinitializeOnChange: function (selector_prefix, reinitialize_self) {

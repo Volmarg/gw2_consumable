@@ -46,7 +46,7 @@ FoodAttributesSelectFilter = {
     },
     select_2: {
         init: function () {
-            let selects = $('[id^="food-attribute-select"]');
+            let selects = $('[class^="food-attribute-select"]');
             let that = this;
 
             selects.select2();
@@ -86,7 +86,7 @@ var attribute_selectors = {
             if (no_prefix === true) {
                 return selector_prefix + '-attribute-select';
             } else {
-                return '#' + selector_prefix + '-attribute-select';
+                return '.' + selector_prefix + '-attribute-select';
             }
         },
         forWrappers: function (selector_prefix, no_prefix = false) {
@@ -133,11 +133,14 @@ var items_visibility = {
     },
     filterItems: function (selected_options, selector_prefix = true) { //TODO: use it in foodFilter as well
         let items = $(attribute_selectors.selectors.item);
+        let attributes_with_numbers = ['level'];
+        let escape_numbers = (attributes_with_numbers.indexOf(selector_prefix) === -1);
+
         $(items).each(function (index, elements) {
 
             elements = (selector_prefix ? $(elements).find('.' + selector_prefix) : elements);
             elements.each(function () {
-                let item_has_option = items_visibility.doesItemContainsSelectedOption(selected_options, $(elements));
+                let item_has_option = items_visibility.doesItemContainsSelectedOption(selected_options, $(elements), escape_numbers);
                 let item = (!$(elements).hasClass('oneItem') ? $(elements).closest(attribute_selectors.selectors.item) : $(elements));
                 let hidden_by = items_visibility.changeStatusHiddenByFilter(item, selector_prefix, item_has_option);
 
@@ -191,11 +194,15 @@ var common_utils = {
         fillWithAttributes: function (selector_prefix) {
             let all_attribute_values = common_utils.get_attributes.getAsArray('.' + selector_prefix);
             let selector = attribute_selectors.generate_selector.forAttributesSelects(selector_prefix);
-            new Vue({
-                el: selector,
-                data: {
-                    allAttributeValues: all_attribute_values,
-                },
+            let all_selects = $(selector);
+
+            all_selects.each((index, item) => {
+                new Vue({
+                    el: item,
+                    data: {
+                        allAttributeValues: all_attribute_values,
+                    },
+                });
             });
         },
         reinitializeOnChange: function (selector_prefix, reinitialize_self) {
@@ -231,7 +238,7 @@ var select_2 = {
         $(attribute_selectors.generate_selector.forAttributesSelects('rarity')).select2();
     },
     reInitialize: function (attributes, attribute_type) {
-        let selects = $('[id^="' + attribute_selectors.generate_selector.forAttributesSelects(attribute_type, true) + '"]');
+        let selects = $('[class^="' + attribute_selectors.generate_selector.forAttributesSelects(attribute_type, true) + '"]');
         let text_holder_class = '.select2-selection__rendered';
 
         selects.each(function (index, item) {

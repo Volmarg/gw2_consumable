@@ -4,7 +4,7 @@ var attribute_selectors = {
             if (no_prefix === true) {
                 return selector_prefix + '-attribute-select';
             } else {
-                return '#' + selector_prefix + '-attribute-select';
+                return '.' + selector_prefix + '-attribute-select';
             }
         },
         forWrappers: function (selector_prefix, no_prefix = false) {

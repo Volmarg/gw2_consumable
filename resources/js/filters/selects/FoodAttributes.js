@@ -46,7 +46,7 @@ FoodAttributesSelectFilter = {
     },
     select_2: {
         init: function () {
-            let selects = $('[id^="food-attribute-select"]');
+            let selects = $('[class^="food-attribute-select"]');
             let that = this;
 
             selects.select2();

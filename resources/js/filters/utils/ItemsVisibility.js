@@ -30,11 +30,14 @@ var items_visibility = {
     },
     filterItems: function (selected_options, selector_prefix = true) { //TODO: use it in foodFilter as well
         let items = $(attribute_selectors.selectors.item);
+        let attributes_with_numbers = ['level'];
+        let escape_numbers = (attributes_with_numbers.indexOf(selector_prefix) === -1);
+
         $(items).each(function (index, elements) {
 
             elements = (selector_prefix ? $(elements).find('.' + selector_prefix) : elements);
             elements.each(function () {
-                let item_has_option = items_visibility.doesItemContainsSelectedOption(selected_options, $(elements));
+                let item_has_option = items_visibility.doesItemContainsSelectedOption(selected_options, $(elements), escape_numbers);
                 let item = (!$(elements).hasClass('oneItem') ? $(elements).closest(attribute_selectors.selectors.item) : $(elements));
                 let hidden_by = items_visibility.changeStatusHiddenByFilter(item, selector_prefix, item_has_option);
 
