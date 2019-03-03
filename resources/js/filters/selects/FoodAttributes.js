@@ -48,6 +48,7 @@ FoodAttributesSelectFilter = {
         init: function () {
             let selects = $('[class^="food-attribute-select"]');
             let that = this;
+            config.init('food');
 
             selects.select2();
             that.reInitialize(); //BUG 1 - FIX: jq based reinit is working fine, shouldn't de done that way but that's fastest way

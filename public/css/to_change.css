@@ -1,0 +1,45 @@
+#all-food-items-wrapper > section {
+    display: block !important;
+
+}
+
+.items-header .headers-section, .oneItem {
+    width: auto;
+    height: auto;
+    display: flex;
+}
+
+.oneItem .itemName, .oneItem .detailsWrapper, .oneItem .itemData {
+    align-self: center;
+    margin: 5px;
+}
+
+.itemName {
+    width: 250px;
+}
+
+.itemData {
+    margin-left: auto !important;
+    width: 200px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.headers-section{
+    margin:10px;
+    color: #7aa882;
+}
+
+.headers-section div{
+    margin: 5px;
+}
+
+/* przenieść */
+
+body{
+    background-color: #272727 !important;
+}
+
+.oneItem{
+    background-color: #191919 !important;
+}

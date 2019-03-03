@@ -20,6 +20,7 @@
         "vue": "^2.5.17"
     },
     "dependencies": {
+        "gulp-sass": "^4.0.2",
         "reload": "^2.3.1"
     }
 }

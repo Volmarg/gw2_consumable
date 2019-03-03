@@ -48,6 +48,7 @@ FoodAttributesSelectFilter = {
         init: function () {
             let selects = $('[class^="food-attribute-select"]');
             let that = this;
+            config.init('food');
 
             selects.select2();
             that.reInitialize(); //BUG 1 - FIX: jq based reinit is working fine, shouldn't de done that way but that's fastest way
@@ -66,15 +67,20 @@ FoodAttributesSelectFilter = {
     },
 };//TODO: this still should be refractored at one point
 var levels_attribute = {
+    //start - volmarg
+
     init: function () {
         let selector_prefix = 'level';
+        config.init(selector_prefix);
         common_utils.manage_selects.fillWithAttributes(selector_prefix);
         common_utils.manage_selects.reinitializeOnChange(selector_prefix, false);
     },
+    //end - volmarg
 };
 var rarity_attribute = {
     init: function () {
         let selector_prefix = 'rarity';
+        config.init(selector_prefix);
         common_utils.manage_selects.fillWithAttributes(selector_prefix);
         common_utils.manage_selects.reinitializeOnChange(selector_prefix, false);
     },
@@ -102,67 +108,102 @@ var attribute_selectors = {
     },
 };
 var items_visibility = {
-    changeItemVisibility: function (item, hidden_by) {
-        if (hidden_by.length !== 0) {
-            item.css({display: 'none'});
-            item.find('li').attr('data-attrs-available', 'false');
-        } else {
-            item.css({display: 'flex'});
-            item.find('li').attr('data-attrs-available', 'true');
-        }
-    },
-    changeStatusHiddenByFilter: function (item, selector_prefix, has_selected_option) {
-        let attr = 'data-hidden-by-filter-types';
-        let hidden_by = JSON.parse($(item).attr(attr));
-
-        if (!has_selected_option) {
-            if (hidden_by.indexOf(selector_prefix) === -1) {
-                hidden_by.push(selector_prefix);
+        changeItemVisibility: function (item, hidden_by) {
+            if (hidden_by.length !== 0) {
+                item.css({display: 'none'});
+                item.find('li').attr('data-attrs-available', 'false');
+            } else {
+                item.css({display: 'flex'});
+                item.find('li').attr('data-attrs-available', 'true');
             }
-        } else {
-            hidden_by = hidden_by.filter(function (value) {
-                return value !== selector_prefix;
-            });
-        }
+        },
+        changeStatusHiddenByFilter: function (item, selector_prefix, has_selected_option) {
+            let attr = 'data-hidden-by-filter-types';
+            let hidden_by = JSON.parse($(item).attr(attr));
 
-        $(item).attr(attr, JSON.stringify(hidden_by));
-        return hidden_by;
-    },
-    isItemHiddenByFilter: function (item) {
-        return JSON.parse($(item).attr('data-hidden-by-filter-types')).length !== 0;
-    },
-    filterItems: function (selected_options, selector_prefix = true) { //TODO: use it in foodFilter as well
-        let items = $(attribute_selectors.selectors.item);
-        let attributes_with_numbers = ['level'];
-        let escape_numbers = (attributes_with_numbers.indexOf(selector_prefix) === -1);
-
-        $(items).each(function (index, elements) {
-
-            elements = (selector_prefix ? $(elements).find('.' + selector_prefix) : elements);
-            elements.each(function () {
-                let item_has_option = items_visibility.doesItemContainsSelectedOption(selected_options, $(elements), escape_numbers);
-                let item = (!$(elements).hasClass('oneItem') ? $(elements).closest(attribute_selectors.selectors.item) : $(elements));
-                let hidden_by = items_visibility.changeStatusHiddenByFilter(item, selector_prefix, item_has_option);
-
-                items_visibility.changeItemVisibility(item, hidden_by);
-            });
-        });
-    },
-    doesItemContainsSelectedOption: function (selected_options, element, escape_numbers = true) { //TODO: refractor with common if possible
-        let status = '';
-        selected_options.each(function (index, selected_option) {
-            let pattern = (escape_numbers ? /([+-])?([0-9])*([%])?/g : /([+-])?([%])?/g);
-            let selected_option_string = Utils.escapeRegExp($(selected_option).text().trim());
-            let reg = new RegExp(selected_option_string, "i");
-
-            status = (!reg.exec($(element).text().trim().replace(pattern, '')) ? false : true);
-            if (!status) {
-                return false;
+            if (!has_selected_option) {
+                if (hidden_by.indexOf(selector_prefix) === -1) {
+                    hidden_by.push(selector_prefix);
+                }
+            } else {
+                hidden_by = hidden_by.filter(function (value) {
+                    return value !== selector_prefix;
+                });
             }
-        });
-        return status;
-    },
-};
+
+            $(item).attr(attr, JSON.stringify(hidden_by));
+            return hidden_by;
+        },
+        isItemHiddenByFilter: function (item) {
+            return JSON.parse($(item).attr('data-hidden-by-filter-types')).length !== 0;
+        },
+        //changes - volmarg start
+        filterItems: function (selected_options, selector_prefix = true) { //TODO: use it in foodFilter as well
+            let items = $(attribute_selectors.selectors.item);
+            let attributes_with_numbers = ['level'];
+            let escape_numbers = (attributes_with_numbers.indexOf(selector_prefix) === -1);
+
+            $(items).each(function (index, elements) {
+
+                elements = (selector_prefix ? $(elements).find('.' + selector_prefix) : elements);
+                elements.each(function () {
+                    let item_matches_selection = items_visibility.doesItemMatchSelectedOption(selected_options, $(elements), escape_numbers);
+                    let item = (!$(elements).hasClass('oneItem') ? $(elements).closest(attribute_selectors.selectors.item) : $(elements));
+                    let hidden_by = items_visibility.changeStatusHiddenByFilter(item, selector_prefix, item_matches_selection);
+
+                    items_visibility.changeItemVisibility(item, hidden_by);
+                });
+            });
+        },
+        doesItemContainsSelectedOption: function (selected_options, element, escape_numbers = true) { //TODO: refractor with common if possible
+            let status = '';
+            selected_options.each(function (index, selected_option) {
+                let pattern = (escape_numbers ? /([+-])?([0-9])*([%])?/g : /([+-])?([%])?/g);
+                let selected_option_string = Utils.escapeRegExp($(selected_option).text().trim());
+                let reg = new RegExp(selected_option_string, "i");
+
+                status = (!reg.exec($(element).text().trim().replace(pattern, '')) ? false : true);
+                if (!status) {
+                    return false;
+                }
+            });
+            return status;
+        },
+        doesItemIsBetweenSelectedValuesRange: function (selected_options, element) {
+            let status = '';
+            selected_options.each(function (index, selected_option) {
+                let pattern = /([+-])?([%])?/g;
+                let checked_element_value = parseInt((element).text().trim().replace(pattern, ''));
+
+                let range_search_group = $(selected_option).closest('section');
+                let max = parseInt($(range_search_group).find('[data-id^="max"]').find('option:selected').text());
+                max = (isNaN(max) ? 80 : max);
+
+                let min = parseInt($(range_search_group).find('[data-id^="min"]').find('option:selected').text());
+                min = (isNaN(min) ? 1 : min);
+                //BUG: clearing level attr clears both (min/max)
+                status = (checked_element_value <= max && checked_element_value >= min ? true : '');
+            });
+            return status;
+        },
+        doesItemMatchSelectedOption: function (selected_options, elements, escape_numbers) {
+            let option_check_method = JSON.parse($(selected_options).parent().attr('data-config')).matching_option_check_method;
+            let item_matches_selection = false;
+
+            switch (option_check_method) {
+                case 'contains_option':
+                    item_matches_selection = items_visibility.doesItemContainsSelectedOption(selected_options, $(elements), escape_numbers);
+                    break;
+
+                case 'is_between_range':
+                    item_matches_selection = items_visibility.doesItemIsBetweenSelectedValuesRange(selected_options, $(elements), escape_numbers);
+                    break;
+            }
+            return item_matches_selection;
+        }
+        //changes - volmarg end
+    }
+;
 var common_utils = {
     get_attributes: {
         getAsArray: function (additional_selector = false, clear_values = false) {
@@ -226,11 +267,49 @@ var common_utils = {
             });
         },
         clearSelection: function (button) {
-            let select = $(button).closest('section').find('select');
+            let data = JSON.parse($(button).attr('data-linked'));
+            let select = $(button).closest('section').find('[data-id="' + data.data_id + '"]');
             $(select).select2("val", false);
             $(select).trigger("change");
         }
     },
+
+
+};
+var config = {
+    options: {
+        matching_option_check_method: null,
+    },
+    init: function (selector_prefix = null) {
+        if (selector_prefix === 'level') {
+            this.setRangeConfig();
+        } else {
+            this.setContainOptionConfig();
+        }
+        this.setCommonDefaultConfig();
+        this.setDataConfigAttribute(selector_prefix);
+    },
+    setDataConfigAttribute: function (selector_prefix) {
+        let selector = attribute_selectors.generate_selector.forAttributesSelects(selector_prefix, true);
+        let elements = $("[class^='" + selector + "']");
+
+        $(elements).each((index, element) => {
+            if ($(element).attr('data-config') === undefined) {
+                $(element).attr({'data-config': JSON.stringify(this.options)})
+            }
+        });
+
+    },
+    setCommonDefaultConfig: function () {
+
+    },
+    setRangeConfig: function () {
+        this.options.matching_option_check_method = 'is_between_range';
+    },
+    setContainOptionConfig: function () {
+        this.options.matching_option_check_method = 'contains_option';
+
+    }
 };
 var select_2 = {
     init: function () {
@@ -251,7 +330,6 @@ var select_2 = {
             $(item).val(selected_option);
             $(item).parent().find(text_holder_class).html(selected_option.trim());
         });
-
     },
 };
 Ajax = {
@@ -288,10 +366,8 @@ Init = {
             Ajax.updateDatabase();
         });
 
-        $('.clear-filter').on('click', (event) => {
-            let element = event.target;
-            //  let selector_prefix = $(element).closest('section').attr('data-prefix');
-
+        $('.clear-filter').on('click',(event)=>{
+            let element=event.target;
             common_utils.manage_selects.clearSelection(element);
         });
     }

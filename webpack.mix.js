@@ -22,6 +22,7 @@ mix.scripts(
         'resources/js/filters/selects/AttributesSelectors.js',
         'resources/js/filters/utils/ItemsVisibility.js',
         'resources/js/filters/utils/CommonUtils.js',
+        'resources/js/filters/utils/Config.js',
         'resources/js/filters/Select2ForAttributesSelect.js',
         'resources/js/ajax.js',
         'resources/js/Init.js',
