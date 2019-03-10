@@ -14,13 +14,11 @@
 
 <h2>Partially working</h2>
 <ul>
-<li> Filtering by lvl</li>
-<li> Filtering by rarity</li>
+<li> Filtering by lvls range</li>
 </ul>
 
 <h2>Plans</h2>
 <ul>
-<li> More details displayed in boxes</li>
 <li> Runes/Sigils filtering by attributes </li>
 <li> Additional menu for swapping bettwen consumables/upgrades </li>
 </ul>
