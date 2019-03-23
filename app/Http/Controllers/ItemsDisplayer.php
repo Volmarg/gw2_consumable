@@ -13,6 +13,7 @@ class ItemsDisplayer extends Controller {
         $consumables = new Consumables();
 
         $all_items = $this->itemsDataToArray($consumables->get()->toArray());
+        usort($all_items, [$this,"sortItemsByLevel"]);
         ExceptionsHandler::expectedItemsNotEmpty($all_items);
 
         return view('consumables', compact('all_items'));
@@ -33,4 +34,7 @@ class ItemsDisplayer extends Controller {
         return $one_item_data;
     }
 
+    protected function sortItemsByLevel($a,$b){
+            return $b['item_data']->level- $a['item_data']->level;
+    }
 }

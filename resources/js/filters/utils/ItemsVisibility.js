@@ -72,7 +72,6 @@ var items_visibility = {
 
                 let min = parseInt($(range_search_group).find('[data-id^="min"]').find('option:selected').text());
                 min = (isNaN(min) ? 1 : min);
-                //BUG: clearing level attr clears both (min/max)
                 status = (checked_element_value <= max && checked_element_value >= min ? true : '');
             });
             return status;

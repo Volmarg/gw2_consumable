@@ -15,10 +15,10 @@
     </button>
 </section>
 <section class="rarityAttributesWrapper" data-prefix="rarity">
-    <select class="rarity-attribute-select">
+    <select class="rarity-attribute-select" data-id="null">
         <option v-for="oneAttributeValue in allAttributeValues" ref="common-attribute-levels"
                 :value="oneAttributeValue">@{{ oneAttributeValue }}
         </option>
     </select>
-    <button class="btn btn-sm btn-info clear-filter">X</button>
+    <button class="btn btn-sm btn-info clear-filter" data-linked='{"class": "rarityAttributesWrapper",	"data_id": "null"}'>X</button>
 </section>

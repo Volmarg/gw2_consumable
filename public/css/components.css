@@ -145,3 +145,9 @@
         transform: rotate(360deg);
     }
 }
+
+/* ADD TO SASS */
+
+.select2-container{
+    min-width:60px;
+}

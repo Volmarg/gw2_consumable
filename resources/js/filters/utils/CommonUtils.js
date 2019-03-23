@@ -61,6 +61,7 @@ var common_utils = {
             });
         },
         clearSelection: function (button) {
+         //   debugger;
             let data = JSON.parse($(button).attr('data-linked'));
             let select = $(button).closest('section').find('[data-id="' + data.data_id + '"]');
             $(select).select2("val", false);
