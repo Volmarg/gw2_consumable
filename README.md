@@ -12,9 +12,17 @@
 <li> In case You run to problems like empty database, go manually to <pre>/fix</pre> page and pick up required options.
 </ul>
 
-<h2>Partially working</h2>
+<h2>What is working</h2>
 <ul>
-<li> Filtering by lvls range</li>
+<li> Filtering by:
+    <ul>
+        <li>level range</li>
+        <li>rarity</li>
+        <li>attributes</li>
+     </ul>
+</li>
+    <li>Database update in case of game updates</li>
+    <li>Filters overlaying which means that You can filter items by level and rarity at same time</li>
 </ul>
 
 <h2>Plans</h2>
